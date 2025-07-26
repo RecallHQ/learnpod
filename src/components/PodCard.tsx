@@ -271,6 +271,14 @@ const PodCard: React.FC<PodCardProps> = memo(
           {pod.description}
         </motion.p> */}
 
+          <div className="flex items-center text-xs flex-wrap gap-2">
+            {pod.tags.map((tag, index) => (
+              <span key={index} className="bg-blue-100/80 px-4 py-1 rounded-lg">
+                {tag}
+              </span>
+            ))}
+          </div>
+
           {/* Meta Information */}
           <motion.div
             className="flex items-center justify-between text-xs text-gray-500 space-y-2"
@@ -292,9 +300,11 @@ const PodCard: React.FC<PodCardProps> = memo(
               </div> */}
 
                 {/* Interactions Count */}
-                <div className="flex items-center text-gray-500">
+                <div className="flex items-center text-gray-500 py-4">
                   <Eye className="w-3 h-3 mr-1" />
-                  <span className="font-medium">{pod.queries}</span>
+                  <span className="font-medium">
+                    {pod.queries} Interactions
+                  </span>
                 </div>
               </div>
             </div>

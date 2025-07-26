@@ -1,13 +1,23 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Zap, ArrowRight, Sparkles, Play, Users, Clock, BookOpen } from 'lucide-react';
+import React from "react";
+import { motion } from "framer-motion";
+import {
+  Zap,
+  ArrowRight,
+  Sparkles,
+  Play,
+  Users,
+  Clock,
+  BookOpen,
+} from "lucide-react";
 
 interface HeroProps {
   onCreatePod: () => void;
 }
 
 // Modern VideoIndex Logo Component
-const VideoIndexLogo: React.FC<{ className?: string }> = ({ className = "w-24 h-24" }) => {
+const VideoIndexLogo: React.FC<{ className?: string }> = ({
+  className = "w-24 h-24",
+}) => {
   return (
     <svg
       viewBox="0 0 120 120"
@@ -28,7 +38,7 @@ const VideoIndexLogo: React.FC<{ className?: string }> = ({ className = "w-24 h-
         strokeWidth="2"
         className="drop-shadow-lg"
       />
-      
+
       {/* Video Screen */}
       <rect
         x="25"
@@ -39,7 +49,7 @@ const VideoIndexLogo: React.FC<{ className?: string }> = ({ className = "w-24 h-
         ry="4"
         fill="url(#screenGradient)"
       />
-      
+
       {/* Play Button in Video */}
       <circle
         cx="60"
@@ -48,13 +58,10 @@ const VideoIndexLogo: React.FC<{ className?: string }> = ({ className = "w-24 h-
         fill="rgba(255, 255, 255, 0.9)"
         className="drop-shadow-sm"
       />
-      
+
       {/* Play Triangle */}
-      <path
-        d="M56 54 L56 66 L68 60 Z"
-        fill="url(#logoGradient1)"
-      />
-      
+      <path d="M56 54 L56 66 L68 60 Z" fill="url(#logoGradient1)" />
+
       {/* AI Brain/Network Above Video */}
       <g transform="translate(60, 25)">
         {/* Central AI Node */}
@@ -65,36 +72,140 @@ const VideoIndexLogo: React.FC<{ className?: string }> = ({ className = "w-24 h-
           fill="url(#aiGradient)"
           className="drop-shadow-sm"
         />
-        
+
         {/* AI Network Nodes */}
-        <circle cx="-15" cy="-8" r="3" fill="url(#logoGradient2)" opacity="0.8" />
-        <circle cx="15" cy="-8" r="3" fill="url(#logoGradient2)" opacity="0.8" />
-        <circle cx="-10" cy="8" r="3" fill="url(#logoGradient2)" opacity="0.8" />
+        <circle
+          cx="-15"
+          cy="-8"
+          r="3"
+          fill="url(#logoGradient2)"
+          opacity="0.8"
+        />
+        <circle
+          cx="15"
+          cy="-8"
+          r="3"
+          fill="url(#logoGradient2)"
+          opacity="0.8"
+        />
+        <circle
+          cx="-10"
+          cy="8"
+          r="3"
+          fill="url(#logoGradient2)"
+          opacity="0.8"
+        />
         <circle cx="10" cy="8" r="3" fill="url(#logoGradient2)" opacity="0.8" />
-        
+
         {/* Neural Connections */}
-        <line x1="0" y1="0" x2="-15" y2="-8" stroke="url(#logoGradient2)" strokeWidth="1.5" opacity="0.6" />
-        <line x1="0" y1="0" x2="15" y2="-8" stroke="url(#logoGradient2)" strokeWidth="1.5" opacity="0.6" />
-        <line x1="0" y1="0" x2="-10" y2="8" stroke="url(#logoGradient2)" strokeWidth="1.5" opacity="0.6" />
-        <line x1="0" y1="0" x2="10" y2="8" stroke="url(#logoGradient2)" strokeWidth="1.5" opacity="0.6" />
+        <line
+          x1="0"
+          y1="0"
+          x2="-15"
+          y2="-8"
+          stroke="url(#logoGradient2)"
+          strokeWidth="1.5"
+          opacity="0.6"
+        />
+        <line
+          x1="0"
+          y1="0"
+          x2="15"
+          y2="-8"
+          stroke="url(#logoGradient2)"
+          strokeWidth="1.5"
+          opacity="0.6"
+        />
+        <line
+          x1="0"
+          y1="0"
+          x2="-10"
+          y2="8"
+          stroke="url(#logoGradient2)"
+          strokeWidth="1.5"
+          opacity="0.6"
+        />
+        <line
+          x1="0"
+          y1="0"
+          x2="10"
+          y2="8"
+          stroke="url(#logoGradient2)"
+          strokeWidth="1.5"
+          opacity="0.6"
+        />
       </g>
-      
+
       {/* Learning Progress Indicators */}
       <g transform="translate(60, 95)">
         {/* Progress Dots */}
-        <circle cx="-20" cy="0" r="2.5" fill="url(#logoGradient1)" opacity="0.9" />
-        <circle cx="-10" cy="0" r="2.5" fill="url(#logoGradient1)" opacity="0.7" />
-        <circle cx="0" cy="0" r="2.5" fill="url(#logoGradient1)" opacity="0.5" />
-        <circle cx="10" cy="0" r="2.5" fill="url(#logoGradient2)" opacity="0.3" />
-        <circle cx="20" cy="0" r="2.5" fill="url(#logoGradient2)" opacity="0.2" />
+        <circle
+          cx="-20"
+          cy="0"
+          r="2.5"
+          fill="url(#logoGradient1)"
+          opacity="0.9"
+        />
+        <circle
+          cx="-10"
+          cy="0"
+          r="2.5"
+          fill="url(#logoGradient1)"
+          opacity="0.7"
+        />
+        <circle
+          cx="0"
+          cy="0"
+          r="2.5"
+          fill="url(#logoGradient1)"
+          opacity="0.5"
+        />
+        <circle
+          cx="10"
+          cy="0"
+          r="2.5"
+          fill="url(#logoGradient2)"
+          opacity="0.3"
+        />
+        <circle
+          cx="20"
+          cy="0"
+          r="2.5"
+          fill="url(#logoGradient2)"
+          opacity="0.2"
+        />
       </g>
-      
+
       {/* Knowledge Particles */}
-      <circle cx="25" cy="25" r="1.5" fill="url(#logoGradient1)" opacity="0.6" />
-      <circle cx="95" cy="30" r="1.5" fill="url(#logoGradient2)" opacity="0.6" />
-      <circle cx="30" cy="95" r="1.5" fill="url(#logoGradient1)" opacity="0.6" />
-      <circle cx="90" cy="90" r="1.5" fill="url(#logoGradient2)" opacity="0.6" />
-      
+      <circle
+        cx="25"
+        cy="25"
+        r="1.5"
+        fill="url(#logoGradient1)"
+        opacity="0.6"
+      />
+      <circle
+        cx="95"
+        cy="30"
+        r="1.5"
+        fill="url(#logoGradient2)"
+        opacity="0.6"
+      />
+      <circle
+        cx="30"
+        cy="95"
+        r="1.5"
+        fill="url(#logoGradient1)"
+        opacity="0.6"
+      />
+      <circle
+        cx="90"
+        cy="90"
+        r="1.5"
+        fill="url(#logoGradient2)"
+        opacity="0.6"
+      />
+
       {/* Gradient Definitions */}
       <defs>
         <linearGradient id="logoGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -102,22 +213,28 @@ const VideoIndexLogo: React.FC<{ className?: string }> = ({ className = "w-24 h-
           <stop offset="50%" stopColor="#6366F1" />
           <stop offset="100%" stopColor="#8B5CF6" />
         </linearGradient>
-        
+
         <linearGradient id="logoGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stopColor="#06B6D4" />
           <stop offset="100%" stopColor="#3B82F6" />
         </linearGradient>
-        
-        <linearGradient id="videoFrameGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+
+        <linearGradient
+          id="videoFrameGradient"
+          x1="0%"
+          y1="0%"
+          x2="100%"
+          y2="100%"
+        >
           <stop offset="0%" stopColor="#F8FAFC" />
           <stop offset="100%" stopColor="#E2E8F0" />
         </linearGradient>
-        
+
         <linearGradient id="screenGradient" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stopColor="#1E293B" />
           <stop offset="100%" stopColor="#334155" />
         </linearGradient>
-        
+
         <radialGradient id="aiGradient" cx="50%" cy="50%" r="50%">
           <stop offset="0%" stopColor="#6366F1" />
           <stop offset="100%" stopColor="#3B82F6" />
@@ -128,16 +245,16 @@ const VideoIndexLogo: React.FC<{ className?: string }> = ({ className = "w-24 h-
 };
 const Hero: React.FC<HeroProps> = ({ onCreatePod }) => {
   return (
-    <section className="relative h-[45vh] lg:h-[40vh] flex items-center justify-center overflow-hidden">
+    <section className="relative h-[55vh] md:h-[45vh] lg:h-[40vh] flex items-center justify-center overflow-hidden">
       {/* Animated Light Gradient Background */}
       <motion.div
         className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50"
         animate={{
           background: [
-            'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 25%, #f3e8ff 50%, #fef3c7 75%, #ecfdf5 100%)',
-            'linear-gradient(135deg, #ecfdf5 0%, #f0f9ff 25%, #fef3c7 50%, #e0f2fe 75%, #f3e8ff 100%)',
-            'linear-gradient(135deg, #f3e8ff 0%, #fef3c7 25%, #ecfdf5 50%, #f0f9ff 75%, #e0f2fe 100%)',
-            'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 25%, #f3e8ff 50%, #fef3c7 75%, #ecfdf5 100%)',
+            "linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 25%, #f3e8ff 50%, #fef3c7 75%, #ecfdf5 100%)",
+            "linear-gradient(135deg, #ecfdf5 0%, #f0f9ff 25%, #fef3c7 50%, #e0f2fe 75%, #f3e8ff 100%)",
+            "linear-gradient(135deg, #f3e8ff 0%, #fef3c7 25%, #ecfdf5 50%, #f0f9ff 75%, #e0f2fe 100%)",
+            "linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 25%, #f3e8ff 50%, #fef3c7 75%, #ecfdf5 100%)",
           ],
         }}
         transition={{
@@ -149,10 +266,26 @@ const Hero: React.FC<HeroProps> = ({ onCreatePod }) => {
 
       {/* Subtle Overlay Pattern */}
       <div className="absolute inset-0 opacity-30">
-        <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <svg
+          className="w-full h-full"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+        >
           <defs>
-            <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
-              <circle cx="5" cy="5" r="0.5" fill="currentColor" className="text-blue-200" opacity="0.3" />
+            <pattern
+              id="grid"
+              width="10"
+              height="10"
+              patternUnits="userSpaceOnUse"
+            >
+              <circle
+                cx="5"
+                cy="5"
+                r="0.5"
+                fill="currentColor"
+                className="text-blue-200"
+                opacity="0.3"
+              />
             </pattern>
           </defs>
           <rect width="100" height="100" fill="url(#grid)" />
@@ -166,8 +299,8 @@ const Hero: React.FC<HeroProps> = ({ onCreatePod }) => {
             key={i}
             className="absolute w-2 h-2 bg-gradient-to-r from-blue-300 to-indigo-300 rounded-full opacity-40"
             style={{
-              left: `${10 + (i * 8) % 80}%`,
-              top: `${15 + (i * 12) % 70}%`,
+              left: `${10 + ((i * 8) % 80)}%`,
+              top: `${15 + ((i * 12) % 70)}%`,
             }}
             animate={{
               y: [0, -30, 0],
@@ -188,7 +321,6 @@ const Hero: React.FC<HeroProps> = ({ onCreatePod }) => {
       {/* Content Container */}
       <div className="relative z-10 max-w-[90rem] mx-auto px-[3%] md:px-[4%] lg:px-[5%] xl:px-[6%] w-full">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-          
           {/* Left Column - Main Content */}
           <motion.div
             className="text-center lg:text-left space-y-6 order-2 lg:order-1"
@@ -196,22 +328,6 @@ const Hero: React.FC<HeroProps> = ({ onCreatePod }) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            {/* Innovation Badge */}
-            <motion.div
-              className="inline-flex items-center px-4 py-2 bg-white/60 backdrop-blur-sm border border-blue-200/50 rounded-full text-blue-700 text-sm font-medium shadow-sm"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              whileHover={{ 
-                scale: 1.05,
-                backgroundColor: "rgba(255, 255, 255, 0.8)",
-                transition: { duration: 0.2 }
-              }}
-            >
-              <Sparkles className="w-4 h-4 mr-2 text-blue-600" />
-              AI-Powered Learning Revolution
-            </motion.div>
-
             {/* Main Headline */}
             <motion.div
               className="space-y-3"
@@ -219,19 +335,20 @@ const Hero: React.FC<HeroProps> = ({ onCreatePod }) => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
             >
-              <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight whitespace-nowrap">
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight whitespace-nowrap">
                 <span className="bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-700 bg-clip-text text-transparent">
-                  Learn Smarter With AI
+                  AI-Powered Learning From Video
                 </span>
               </h1>
-              
+
               <motion.p
                 className="text-base md:text-lg lg:text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto lg:mx-0"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.5 }}
               >
-                Transform videos into interactive learning experiences.
+                Transforming educational videos into interactive, AI-powered
+                learning
               </motion.p>
             </motion.div>
 
@@ -245,15 +362,14 @@ const Hero: React.FC<HeroProps> = ({ onCreatePod }) => {
               {[
                 { icon: BookOpen, text: "AI-Powered Analysis" },
                 { icon: Clock, text: "Instant Responses" },
-                { icon: Users, text: "Collaborative Learning" }
               ].map((feature, index) => (
                 <motion.div
                   key={index}
                   className="flex items-center space-x-2 bg-white/40 backdrop-blur-sm px-3 py-2 rounded-full border border-gray-200/50"
-                  whileHover={{ 
+                  whileHover={{
                     scale: 1.05,
                     backgroundColor: "rgba(255, 255, 255, 0.6)",
-                    transition: { duration: 0.2 }
+                    transition: { duration: 0.2 },
                   }}
                 >
                   <feature.icon className="w-4 h-4 text-blue-600" />
@@ -261,7 +377,6 @@ const Hero: React.FC<HeroProps> = ({ onCreatePod }) => {
                 </motion.div>
               ))}
             </motion.div>
-
           </motion.div>
 
           {/* Right Column - Visual Element */}
@@ -273,7 +388,6 @@ const Hero: React.FC<HeroProps> = ({ onCreatePod }) => {
           >
             {/* Main Visual Container */}
             <div className="relative w-48 h-48 md:w-64 md:h-64 lg:w-72 lg:h-72">
-              
               {/* Outer Glow Ring */}
               <motion.div
                 className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-200/40 via-indigo-200/40 to-purple-200/40 blur-3xl"
@@ -302,11 +416,11 @@ const Hero: React.FC<HeroProps> = ({ onCreatePod }) => {
                   }}
                   whileHover={{
                     scale: 1.05,
-                    transition: { duration: 0.3 }
+                    transition: { duration: 0.3 },
                   }}
                 >
                   <VideoIndexLogo className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24" />
-                  
+
                   {/* Pulsing Dots Around Icon */}
                   {[...Array(8)].map((_, i) => (
                     <motion.div
@@ -315,7 +429,7 @@ const Hero: React.FC<HeroProps> = ({ onCreatePod }) => {
                       style={{
                         left: `${50 + 45 * Math.cos((i * Math.PI * 2) / 8)}%`,
                         top: `${50 + 45 * Math.sin((i * Math.PI * 2) / 8)}%`,
-                        transform: 'translate(-50%, -50%)',
+                        transform: "translate(-50%, -50%)",
                       }}
                       animate={{
                         scale: [1, 1.5, 1],
@@ -345,17 +459,17 @@ const Hero: React.FC<HeroProps> = ({ onCreatePod }) => {
                     strokeDasharray="8 8"
                     opacity="0.4"
                     initial={{ pathLength: 0 }}
-                    animate={{ 
-                      pathLength: 1, 
-                      rotate: i % 2 === 0 ? 360 : -360 
+                    animate={{
+                      pathLength: 1,
+                      rotate: i % 2 === 0 ? 360 : -360,
                     }}
                     transition={{
                       pathLength: { duration: 2, delay: i * 0.3 },
-                      rotate: { 
-                        duration: 15 + i * 5, 
-                        repeat: Infinity, 
-                        ease: "linear" 
-                      }
+                      rotate: {
+                        duration: 15 + i * 5,
+                        repeat: Infinity,
+                        ease: "linear",
+                      },
                     }}
                   />
                 ))}

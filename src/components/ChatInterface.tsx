@@ -133,7 +133,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
     <div className="flex flex-col h-full bg-gray-50 rounded-lg">
       {/* Header */}
       <div className="bg-white border-b border-gray-200 p-4 rounded-t-lg">
-        <h3 className="font-semibold text-gray-900">Q&A Chat</h3>
+        <h3 className="font-semibold text-gray-900">Q&A Section</h3>
         <p className="text-sm text-gray-500">
           Ask questions about the video content
         </p>
@@ -171,19 +171,22 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
                     <div className="text-sm text-gray-800 mb-2">
                       <span>{message.answer}</span>
                       {/* Show typing indicator if message is being streamed */}
-                      {isLoading && index === messages.length - 1 && message.type === 'ai' && (
-                        <motion.span
-                          className="inline-block ml-1"
-                          animate={{ opacity: [0.5, 1, 0.5] }}
-                          transition={{ duration: 1, repeat: Infinity }}
-                        >
-                          ▋
-                        </motion.span>
-                      )}
+                      {isLoading &&
+                        index === messages.length - 1 &&
+                        message.type === "ai" && (
+                          <motion.span
+                            className="inline-block ml-1"
+                            animate={{ opacity: [0.5, 1, 0.5] }}
+                            transition={{ duration: 1, repeat: Infinity }}
+                          >
+                            ▋
+                          </motion.span>
+                        )}
                     </div>
 
                     {/* Video Timestamp */}
-                    {message.timestamp && !isLoading && (
+                    {message.timestamp &&
+                      !isLoading &&
                       (() => {
                         // Try to parse timestamp as number (seconds)
                         const timeInSeconds = parseFloat(message.timestamp);
@@ -191,8 +194,11 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
                           return (
                             <button
                               onClick={() => {
-                                console.log('Jumping to time:', timeInSeconds);
-                                onJumpToTime?.(timeInSeconds, message.videoPath);
+                                console.log("Jumping to time:", timeInSeconds);
+                                onJumpToTime?.(
+                                  timeInSeconds,
+                                  message.videoPath
+                                );
                               }}
                               className="flex items-center text-xs text-blue-600 hover:text-blue-700 transition-colors duration-200 mb-2"
                             >
@@ -202,55 +208,54 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
                           );
                         }
                         return null;
-                      })()
-                    )}
+                      })()}
 
                     {/* Alternative: Show start_time if available in message */}
                     {message.videoPath && !message.timestamp && !isLoading && (
-                        <button
-                          onClick={() => {
-                            // If we have video path but no timestamp, jump to beginning
-                            console.log('Jumping to video start');
-                            onJumpToTime?.(0, message.videoPath);
-                          }}
-                          className="flex items-center text-xs text-blue-600 hover:text-blue-700 transition-colors duration-200 mb-2"
-                        >
-                          <Clock className="w-3 h-3 mr-1" />
-                          Jump to video
-                        </button>
+                      <button
+                        onClick={() => {
+                          // If we have video path but no timestamp, jump to beginning
+                          console.log("Jumping to video start");
+                          onJumpToTime?.(0, message.videoPath);
+                        }}
+                        className="flex items-center text-xs text-blue-600 hover:text-blue-700 transition-colors duration-200 mb-2"
+                      >
+                        <Clock className="w-3 h-3 mr-1" />
+                        Jump to video
+                      </button>
                     )}
 
                     {/* Feedback Buttons */}
                     {!isLoading && message.answer && (
                       <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <button
-                          onClick={() => onFeedback(message.id!, "like")}
-                          className={`p-1 rounded transition-colors duration-200 ${
-                            message.feedback === "like"
-                              ? "text-green-600 bg-green-50"
-                              : "text-gray-400 hover:text-green-600"
-                          }`}
-                        >
-                          <ThumbsUp className="w-3 h-3" />
-                        </button>
-                        <button
-                          onClick={() => handleThumbsDown(message.id!)}
-                          className={`p-1 rounded transition-colors duration-200 ${
-                            message.feedback === "dislike"
-                              ? "text-red-600 bg-red-50"
-                              : "text-gray-400 hover:text-red-600"
-                          }`}
-                        >
-                          <ThumbsDown className="w-3 h-3" />
-                        </button>
-                      </div>
-                      <span className="text-xs text-gray-500">
-                        {new Date().toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </span>
+                        <div className="flex items-center space-x-2">
+                          <button
+                            onClick={() => onFeedback(message.id!, "like")}
+                            className={`p-1 rounded transition-colors duration-200 ${
+                              message.feedback === "like"
+                                ? "text-green-600 bg-green-50"
+                                : "text-gray-400 hover:text-green-600"
+                            }`}
+                          >
+                            <ThumbsUp className="w-3 h-3" />
+                          </button>
+                          <button
+                            onClick={() => handleThumbsDown(message.id!)}
+                            className={`p-1 rounded transition-colors duration-200 ${
+                              message.feedback === "dislike"
+                                ? "text-red-600 bg-red-50"
+                                : "text-gray-400 hover:text-red-600"
+                            }`}
+                          >
+                            <ThumbsDown className="w-3 h-3" />
+                          </button>
+                        </div>
+                        <span className="text-xs text-gray-500">
+                          {new Date().toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </span>
                       </div>
                     )}
                   </div>

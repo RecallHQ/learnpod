@@ -19,7 +19,10 @@ const PodDetail: React.FC<PodDetailProps> = ({ id, onBack }) => {
   const [currentVideoUrl, setCurrentVideoUrl] = useState<string>("");
   const [jumpToTime, setJumpToTime] = useState<number | undefined>();
   const [isVideoReady, setIsVideoReady] = useState(false);
-  const [pendingSeek, setPendingSeek] = useState<{ time: number; videoPath?: string } | null>(null);
+  const [pendingSeek, setPendingSeek] = useState<{
+    time: number;
+    videoPath?: string;
+  } | null>(null);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   useEffect(() => {
@@ -49,13 +52,13 @@ const PodDetail: React.FC<PodDetailProps> = ({ id, onBack }) => {
   useEffect(() => {
     if (onVideoUpdate) {
       onVideoUpdate((videoPath: string, timestamp: string) => {
-        console.log('Immediate video update:', videoPath, timestamp);
+        console.log("Immediate video update:", videoPath, timestamp);
         const newVideoUrl = getPublicVideoUrl(videoPath);
         if (newVideoUrl !== currentVideoUrl) {
           setCurrentVideoUrl(newVideoUrl);
           setIsVideoReady(false);
         }
-        
+
         // Store the timestamp for later seeking
         const timeInSeconds = parseFloat(timestamp);
         if (!isNaN(timeInSeconds) && timeInSeconds > 0) {
@@ -65,18 +68,17 @@ const PodDetail: React.FC<PodDetailProps> = ({ id, onBack }) => {
     }
   }, [onVideoUpdate, currentVideoUrl]);
 
-
   const handleJumpToTime = (time: number, videoPath?: string) => {
-    console.log('Jump to time requested:', time);
-    
+    console.log("Jump to time requested:", time);
+
     // If a specific video path is provided, switch to that video first
     if (videoPath) {
       const newVideoUrl = getPublicVideoUrl(videoPath);
-      console.log('Switching to video:', newVideoUrl);
-      
+      console.log("Switching to video:", newVideoUrl);
+
       // Store the pending seek operation
       setPendingSeek({ time, videoPath });
-      
+
       // Only change video if it's different
       if (newVideoUrl !== currentVideoUrl) {
         setCurrentVideoUrl(newVideoUrl);
@@ -95,12 +97,12 @@ const PodDetail: React.FC<PodDetailProps> = ({ id, onBack }) => {
   };
 
   const handleVideoReady = () => {
-    console.log('Video is ready for playback');
+    console.log("Video is ready for playback");
     setIsVideoReady(true);
-    
+
     // Execute pending seek if there is one
     if (pendingSeek) {
-      console.log('Executing pending seek to:', pendingSeek.time);
+      console.log("Executing pending seek to:", pendingSeek.time);
       setTimeout(() => {
         setJumpToTime(pendingSeek.time);
         setTimeout(() => setJumpToTime(undefined), 100);
@@ -185,9 +187,9 @@ const PodDetail: React.FC<PodDetailProps> = ({ id, onBack }) => {
 
               {/* URLs */}
               <div className="mb-4">
-                <h3 className="text-sm font-medium text-gray-700 mb-2">
+                {/* <h3 className="text-sm font-medium text-gray-700 mb-2">
                   Source URLs:
-                </h3>
+                </h3> */}
                 {/* <div className="space-y-2">
                   {pod.urls.map((url, index) => (
                     <a
@@ -202,12 +204,20 @@ const PodDetail: React.FC<PodDetailProps> = ({ id, onBack }) => {
                     </a>
                   ))}
                 </div> */}
+                {podData.tags.map((tag, index) => (
+                  <span
+                    key={index}
+                    className="bg-blue-100 px-4 py-1 rounded-lg"
+                  >
+                    {tag}
+                  </span>
+                ))}
               </div>
 
               {/* Meta Info */}
               <div className="flex items-center text-sm text-gray-500">
                 {/* <span>Created: {pod.createdAt.toLocaleDateString()}</span> */}
-                <span className="mx-2">•</span>
+                {/* <span className="mx-2">•</span> */}
                 {/* <span>{pod.interactions} interactions</span> */}
               </div>
             </div>
