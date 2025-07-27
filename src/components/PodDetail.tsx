@@ -207,7 +207,7 @@ const PodDetail: React.FC<PodDetailProps> = ({ id, onBack }) => {
                 {podData.tags.map((tag, index) => (
                   <span
                     key={index}
-                    className="bg-blue-100 px-4 py-1 rounded-lg"
+                    className="bg-blue-100 px-4 py-1 rounded-lg gap-4"
                   >
                     {tag}
                   </span>

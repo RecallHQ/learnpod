@@ -1,246 +1,18 @@
 import React from "react";
 import { motion } from "framer-motion";
-import {
-  Zap,
-  ArrowRight,
-  Sparkles,
-  Play,
-  Users,
-  Clock,
-  BookOpen,
-} from "lucide-react";
+import { Clock, BookOpen } from "lucide-react";
 
 interface HeroProps {
   onCreatePod: () => void;
 }
 
 // Modern VideoIndex Logo Component
-const VideoIndexLogo: React.FC<{ className?: string }> = ({
-  className = "w-24 h-24",
-}) => {
+const VideoIndexLogo: React.FC<{}> = ({}) => {
   return (
-    <svg
-      viewBox="0 0 120 120"
-      className={className}
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      {/* Video Frame Container */}
-      <rect
-        x="20"
-        y="35"
-        width="80"
-        height="50"
-        rx="8"
-        ry="8"
-        fill="url(#videoFrameGradient)"
-        stroke="url(#logoGradient1)"
-        strokeWidth="2"
-        className="drop-shadow-lg"
-      />
-
-      {/* Video Screen */}
-      <rect
-        x="25"
-        y="40"
-        width="70"
-        height="40"
-        rx="4"
-        ry="4"
-        fill="url(#screenGradient)"
-      />
-
-      {/* Play Button in Video */}
-      <circle
-        cx="60"
-        cy="60"
-        r="12"
-        fill="rgba(255, 255, 255, 0.9)"
-        className="drop-shadow-sm"
-      />
-
-      {/* Play Triangle */}
-      <path d="M56 54 L56 66 L68 60 Z" fill="url(#logoGradient1)" />
-
-      {/* AI Brain/Network Above Video */}
-      <g transform="translate(60, 25)">
-        {/* Central AI Node */}
-        <circle
-          cx="0"
-          cy="0"
-          r="6"
-          fill="url(#aiGradient)"
-          className="drop-shadow-sm"
-        />
-
-        {/* AI Network Nodes */}
-        <circle
-          cx="-15"
-          cy="-8"
-          r="3"
-          fill="url(#logoGradient2)"
-          opacity="0.8"
-        />
-        <circle
-          cx="15"
-          cy="-8"
-          r="3"
-          fill="url(#logoGradient2)"
-          opacity="0.8"
-        />
-        <circle
-          cx="-10"
-          cy="8"
-          r="3"
-          fill="url(#logoGradient2)"
-          opacity="0.8"
-        />
-        <circle cx="10" cy="8" r="3" fill="url(#logoGradient2)" opacity="0.8" />
-
-        {/* Neural Connections */}
-        <line
-          x1="0"
-          y1="0"
-          x2="-15"
-          y2="-8"
-          stroke="url(#logoGradient2)"
-          strokeWidth="1.5"
-          opacity="0.6"
-        />
-        <line
-          x1="0"
-          y1="0"
-          x2="15"
-          y2="-8"
-          stroke="url(#logoGradient2)"
-          strokeWidth="1.5"
-          opacity="0.6"
-        />
-        <line
-          x1="0"
-          y1="0"
-          x2="-10"
-          y2="8"
-          stroke="url(#logoGradient2)"
-          strokeWidth="1.5"
-          opacity="0.6"
-        />
-        <line
-          x1="0"
-          y1="0"
-          x2="10"
-          y2="8"
-          stroke="url(#logoGradient2)"
-          strokeWidth="1.5"
-          opacity="0.6"
-        />
-      </g>
-
-      {/* Learning Progress Indicators */}
-      <g transform="translate(60, 95)">
-        {/* Progress Dots */}
-        <circle
-          cx="-20"
-          cy="0"
-          r="2.5"
-          fill="url(#logoGradient1)"
-          opacity="0.9"
-        />
-        <circle
-          cx="-10"
-          cy="0"
-          r="2.5"
-          fill="url(#logoGradient1)"
-          opacity="0.7"
-        />
-        <circle
-          cx="0"
-          cy="0"
-          r="2.5"
-          fill="url(#logoGradient1)"
-          opacity="0.5"
-        />
-        <circle
-          cx="10"
-          cy="0"
-          r="2.5"
-          fill="url(#logoGradient2)"
-          opacity="0.3"
-        />
-        <circle
-          cx="20"
-          cy="0"
-          r="2.5"
-          fill="url(#logoGradient2)"
-          opacity="0.2"
-        />
-      </g>
-
-      {/* Knowledge Particles */}
-      <circle
-        cx="25"
-        cy="25"
-        r="1.5"
-        fill="url(#logoGradient1)"
-        opacity="0.6"
-      />
-      <circle
-        cx="95"
-        cy="30"
-        r="1.5"
-        fill="url(#logoGradient2)"
-        opacity="0.6"
-      />
-      <circle
-        cx="30"
-        cy="95"
-        r="1.5"
-        fill="url(#logoGradient1)"
-        opacity="0.6"
-      />
-      <circle
-        cx="90"
-        cy="90"
-        r="1.5"
-        fill="url(#logoGradient2)"
-        opacity="0.6"
-      />
-
-      {/* Gradient Definitions */}
-      <defs>
-        <linearGradient id="logoGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#3B82F6" />
-          <stop offset="50%" stopColor="#6366F1" />
-          <stop offset="100%" stopColor="#8B5CF6" />
-        </linearGradient>
-
-        <linearGradient id="logoGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#06B6D4" />
-          <stop offset="100%" stopColor="#3B82F6" />
-        </linearGradient>
-
-        <linearGradient
-          id="videoFrameGradient"
-          x1="0%"
-          y1="0%"
-          x2="100%"
-          y2="100%"
-        >
-          <stop offset="0%" stopColor="#F8FAFC" />
-          <stop offset="100%" stopColor="#E2E8F0" />
-        </linearGradient>
-
-        <linearGradient id="screenGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#1E293B" />
-          <stop offset="100%" stopColor="#334155" />
-        </linearGradient>
-
-        <radialGradient id="aiGradient" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#6366F1" />
-          <stop offset="100%" stopColor="#3B82F6" />
-        </radialGradient>
-      </defs>
-    </svg>
+    <img
+      src="./logo.png"
+      className="w-[150px] h-[150px] md:w-[170px] md:h-[170px] lg:w-[240px] lg:h-[200px]"
+    />
   );
 };
 const Hero: React.FC<HeroProps> = ({ onCreatePod }) => {
@@ -419,7 +191,7 @@ const Hero: React.FC<HeroProps> = ({ onCreatePod }) => {
                     transition: { duration: 0.3 },
                   }}
                 >
-                  <VideoIndexLogo className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24" />
+                  <VideoIndexLogo />
 
                   {/* Pulsing Dots Around Icon */}
                   {[...Array(8)].map((_, i) => (
