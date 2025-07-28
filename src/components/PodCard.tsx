@@ -43,38 +43,31 @@ const PodCard: React.FC<PodCardProps> = memo(
       });
     };
 
-    // const getStatusConfig = (status: Pod['status']) => {
-    //   switch (status) {
-    //     case 'ready':
-    //       return {
-    //         icon: CheckCircle,
-    //         text: 'Ready',
-    //         color: 'bg-green-500/90 text-white',
-    //         dotColor: 'bg-green-400'
-    //       };
-    //     case 'processing':
-    //       return {
-    //         icon: Clock,
-    //         text: 'Processing',
-    //         color: 'bg-yellow-500/90 text-white',
-    //         dotColor: 'bg-yellow-400'
-    //       };
-    //     case 'uploading':
-    //       return {
-    //         icon: Upload,
-    //         text: 'Uploading',
-    //         color: 'bg-blue-500/90 text-white',
-    //         dotColor: 'bg-blue-400'
-    //       };
-    //     case 'error':
-    //       return {
-    //         icon: AlertCircle,
-    //         text: 'Error',
-    //         color: 'bg-red-500/90 text-white',
-    //         dotColor: 'bg-red-400'
-    //       };
-    //   }
-    // };
+    const getStatusConfig = (status: Pod["status"]) => {
+      switch (status) {
+        case "ready":
+          return {
+            icon: CheckCircle,
+            text: "Ready",
+            color: "bg-green-500/90 text-white",
+            dotColor: "bg-green-400",
+          };
+        case "processing":
+          return {
+            icon: Clock,
+            text: "Processing",
+            color: "bg-yellow-500/90 text-white",
+            dotColor: "bg-yellow-400",
+          };
+        case "error":
+          return {
+            icon: AlertCircle,
+            text: "Error",
+            color: "bg-red-500/90 text-white",
+            dotColor: "bg-red-400",
+          };
+      }
+    };
 
     // Performance optimization: Memoize click handler
     const handleClick = React.useCallback(() => {
@@ -82,13 +75,13 @@ const PodCard: React.FC<PodCardProps> = memo(
     }, [onClick, pod]);
 
     // Handle follow toggle
-    const handleFollowClick = React.useCallback(
-      (e: React.MouseEvent) => {
-        e.stopPropagation();
-        onToggleFollow?.(pod.id);
-      },
-      [onToggleFollow, pod.id]
-    );
+    // const handleFollowClick = React.useCallback(
+    //   (e: React.MouseEvent) => {
+    //     e.stopPropagation();
+    //     onToggleFollow?.(pod.id);
+    //   },
+    //   [onToggleFollow, pod.id]
+    // );
 
     // Handle share click
     const handleShareClick = React.useCallback(
@@ -131,8 +124,8 @@ const PodCard: React.FC<PodCardProps> = memo(
           };
     };
 
-    //const statusConfig = getStatusConfig(pod.status);
-    //const StatusIcon = statusConfig.icon;
+    const statusConfig = getStatusConfig(pod.status);
+    const StatusIcon = statusConfig.icon;
 
     return (
       <motion.div
@@ -199,17 +192,19 @@ const PodCard: React.FC<PodCardProps> = memo(
           </motion.div>
 
           {/* Status Badge */}
-          {/* <motion.div
-          className="absolute top-4 left-4"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: animationDelay + 0.2, duration: 0.4 }}
-        >
-          <div className={`flex items-center px-3 py-1 ${statusConfig.color} backdrop-blur-sm text-sm font-medium rounded-full shadow-lg`}>
-            <StatusIcon className="w-3 h-3 mr-1" />
-            {statusConfig.text}
-          </div>
-        </motion.div> */}
+          <motion.div
+            className="absolute top-4 left-4"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: animationDelay + 0.2, duration: 0.4 }}
+          >
+            <div
+              className={`flex items-center px-3 py-1 ${statusConfig.color} backdrop-blur-sm text-sm font-medium rounded-full shadow-lg`}
+            >
+              <StatusIcon className="w-3 h-3 mr-1" />
+              {statusConfig.text}
+            </div>
+          </motion.div>
 
           {/* Follow Button */}
           <motion.div

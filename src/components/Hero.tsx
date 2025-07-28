@@ -92,7 +92,7 @@ const Hero: React.FC<HeroProps> = ({ onCreatePod }) => {
 
       {/* Content Container */}
       <div className="relative z-10 max-w-[90rem] mx-auto px-[3%] md:px-[4%] lg:px-[5%] xl:px-[6%] w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-8 lg:gap-6 items-center">
           {/* Left Column - Main Content */}
           <motion.div
             className="text-center lg:text-left space-y-6 order-2 lg:order-1"
@@ -153,16 +153,16 @@ const Hero: React.FC<HeroProps> = ({ onCreatePod }) => {
 
           {/* Right Column - Visual Element */}
           <motion.div
-            className="relative flex items-center justify-center order-1 lg:order-2"
+            className="relative flex items-center justify-end order-1 lg:order-2"
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
             {/* Main Visual Container */}
-            <div className="relative w-48 h-48 md:w-64 md:h-64 lg:w-72 lg:h-72">
+            <div className="relative w-48 h-48 md:w-64 md:h-64 lg:w-72 lg:h-72 translate-x-8 lg:translate-x-12">
               {/* Outer Glow Ring */}
               <motion.div
-                className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-200/40 via-indigo-200/40 to-purple-200/40 blur-3xl"
+                className="absolute right-0 inset-0 rounded-full bg-gradient-to-r from-blue-200/40 via-indigo-200/40 to-purple-200/40 blur-3xl"
                 animate={{
                   scale: [1, 1.1, 1],
                   opacity: [0.3, 0.6, 0.3],
@@ -175,7 +175,7 @@ const Hero: React.FC<HeroProps> = ({ onCreatePod }) => {
               />
 
               {/* Central Brain Icon */}
-              <div className="absolute inset-0 flex items-center justify-center">
+              <div className="absolute inset-0 right-0 flex items-center justify-center">
                 <motion.div
                   className="relative bg-white/80 backdrop-blur-sm rounded-full p-8 shadow-xl border border-gray-200/50"
                   animate={{

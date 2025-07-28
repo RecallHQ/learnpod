@@ -1,7 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Copy, Check, Share2, Link, Twitter, Facebook, Mail, MessageCircle } from 'lucide-react';
-import { Pod } from '../types';
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  X,
+  Copy,
+  Check,
+  Share2,
+  Link,
+  Twitter,
+  Facebook,
+  Mail,
+  MessageCircle,
+} from "lucide-react";
+import { Pod } from "../types";
+import { getPublicImageUrl } from "../utils/getMediaUrl";
 
 interface ShareModalProps {
   isOpen: boolean;
@@ -10,8 +21,10 @@ interface ShareModalProps {
 }
 
 const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, pod }) => {
-  const [shareUrl, setShareUrl] = useState('');
-  const [copiedStates, setCopiedStates] = useState<{ [key: string]: boolean }>({});
+  const [shareUrl, setShareUrl] = useState("");
+  const [copiedStates, setCopiedStates] = useState<{ [key: string]: boolean }>(
+    {}
+  );
   const [isGeneratingLink, setIsGeneratingLink] = useState(false);
 
   // Generate shareable URL
@@ -31,63 +44,69 @@ const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, pod }) => {
   const copyToClipboard = async (text: string, type: string) => {
     try {
       await navigator.clipboard.writeText(text);
-      setCopiedStates(prev => ({ ...prev, [type]: true }));
-      
+      setCopiedStates((prev) => ({ ...prev, [type]: true }));
+
       // Reset copied state after 2 seconds
       setTimeout(() => {
-        setCopiedStates(prev => ({ ...prev, [type]: false }));
+        setCopiedStates((prev) => ({ ...prev, [type]: false }));
       }, 2000);
     } catch (err) {
-      console.error('Failed to copy text: ', err);
+      console.error("Failed to copy text: ", err);
     }
   };
 
   const shareOptions = [
     {
-      name: 'Twitter',
+      name: "Twitter",
       icon: Twitter,
-      color: 'bg-blue-500 hover:bg-blue-600',
+      color: "bg-blue-500 hover:bg-blue-600",
       action: () => {
         const text = `Check out this amazing learning pod: "${pod.title}" on VideoIndex!`;
-        const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`;
-        window.open(url, '_blank');
-      }
+        const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+          text
+        )}&url=${encodeURIComponent(shareUrl)}`;
+        window.open(url, "_blank");
+      },
     },
     {
-      name: 'Facebook',
+      name: "Facebook",
       icon: Facebook,
-      color: 'bg-blue-600 hover:bg-blue-700',
+      color: "bg-blue-600 hover:bg-blue-700",
       action: () => {
-        const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
-        window.open(url, '_blank');
-      }
+        const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+          shareUrl
+        )}`;
+        window.open(url, "_blank");
+      },
     },
     {
-      name: 'Email',
+      name: "Email",
       icon: Mail,
-      color: 'bg-gray-600 hover:bg-gray-700',
+      color: "bg-gray-600 hover:bg-gray-700",
       action: () => {
         const subject = `Check out this learning pod: ${pod.title}`;
         const body = `I found this interesting learning pod on VideoIndex that I thought you might like:\n\n"${pod.title}"\n${pod.description}\n\nCheck it out here: ${shareUrl}`;
-        const url = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        const url = `mailto:?subject=${encodeURIComponent(
+          subject
+        )}&body=${encodeURIComponent(body)}`;
         window.open(url);
-      }
+      },
     },
     {
-      name: 'WhatsApp',
+      name: "WhatsApp",
       icon: MessageCircle,
-      color: 'bg-green-500 hover:bg-green-600',
+      color: "bg-green-500 hover:bg-green-600",
       action: () => {
         const text = `Check out this learning pod: "${pod.title}" on VideoIndex! ${shareUrl}`;
         const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
-        window.open(url, '_blank');
-      }
-    }
+        window.open(url, "_blank");
+      },
+    },
   ];
 
   const handleClose = () => {
     setCopiedStates({});
-    setShareUrl('');
+    setShareUrl("");
     onClose();
   };
 
@@ -125,13 +144,15 @@ const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, pod }) => {
               >
                 <X className="w-5 h-5 text-gray-400" />
               </button>
-              
+
               <div className="flex items-center space-x-3 mb-2">
                 <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center">
                   <Share2 className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-semibold text-gray-900">Share Pod</h2>
+                  <h2 className="text-xl font-semibold text-gray-900">
+                    Share Pod
+                  </h2>
                 </div>
               </div>
               <p className="text-gray-600 text-sm ml-13">
@@ -145,7 +166,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, pod }) => {
               <div className="mb-6 p-4 bg-gray-50 rounded-2xl">
                 <div className="flex items-start space-x-3">
                   <img
-                    src={pod.thumbnail}
+                    src={getPublicImageUrl(pod.image)}
                     alt={pod.title}
                     className="w-16 h-12 object-cover rounded-lg flex-shrink-0"
                   />
@@ -153,13 +174,13 @@ const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, pod }) => {
                     <h3 className="font-medium text-gray-900 text-sm line-clamp-1">
                       {pod.title}
                     </h3>
-                    <p className="text-gray-500 text-xs mt-1 line-clamp-2">
+                    {/* <p className="text-gray-500 text-xs mt-1 line-clamp-2">
                       {pod.description}
-                    </p>
+                    </p> */}
                     <div className="flex items-center mt-2 text-xs text-gray-400">
-                      <span>{pod.interactions} interactions</span>
-                      <span className="mx-2">•</span>
-                      <span>{pod.followers} followers</span>
+                      <span>{pod.queries} interactions</span>
+                      {/* <span className="mx-2">•</span>
+                      <span>{pod.followers} followers</span> */}
                     </div>
                   </div>
                 </div>
@@ -175,7 +196,9 @@ const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, pod }) => {
                     <div className="flex items-center justify-center py-3 px-4 bg-gray-50 rounded-xl">
                       <div className="flex items-center space-x-2">
                         <div className="w-4 h-4 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
-                        <span className="text-sm text-gray-600">Generating link...</span>
+                        <span className="text-sm text-gray-600">
+                          Generating link...
+                        </span>
                       </div>
                     </div>
                   ) : (
@@ -190,7 +213,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, pod }) => {
                         />
                       </div>
                       <motion.button
-                        onClick={() => copyToClipboard(shareUrl, 'link')}
+                        onClick={() => copyToClipboard(shareUrl, "link")}
                         className="px-4 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors duration-200 flex items-center space-x-2"
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
@@ -259,7 +282,8 @@ const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, pod }) => {
                       Public Sharing
                     </p>
                     <p className="text-xs text-blue-700">
-                      Anyone with this link can view the pod and its content. The link will remain active as long as the pod exists.
+                      Anyone with this link can view the pod and its content.
+                      The link will remain active as long as the pod exists.
                     </p>
                   </div>
                 </div>
