@@ -74,20 +74,20 @@ const CreatePodModal: React.FC<CreatePodModalProps> = ({
   };
 
   const addUrlField = () => {
-    setFormData((prev) => ({ ...prev, urls: [...prev.video_urls, ""] }));
+    setFormData((prev) => ({ ...prev, video_urls: [...prev.video_urls, ""] }));
   };
 
   const removeUrlField = (index: number) => {
     setFormData((prev) => ({
       ...prev,
-      urls: prev.video_urls.filter((_, i) => i !== index),
+      video_urls: prev.video_urls.filter((_, i) => i !== index),
     }));
   };
 
   const updateUrl = (index: number, value: string) => {
     setFormData((prev) => ({
       ...prev,
-      urls: prev.video_urls.map((url, i) => (i === index ? value : url)),
+      video_urls: prev.video_urls.map((url, i) => (i === index ? value : url)),
     }));
   };
 
