@@ -56,6 +56,6 @@ export interface FilterOption {
 
 export interface CreatePodFormData {
   title: string;
-  description: string;
+  // description: string;
   urls: string[];
 }

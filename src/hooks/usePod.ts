@@ -188,3 +188,21 @@ export const getUsage = async (): Promise<
     throw new Error("Failed to fetch usage data");
   }
 };
+
+export const createPod = async (podData: {
+  title: string;
+  urls: string[];
+}): Promise<PodResponseData> => {
+  console.log("Creating pod with data:", podData);
+  const response = await axios.post<PodResponseData>(
+    `${API_BASE_URL}/upload`,
+    podData,
+    {
+      headers: {
+        "X-Session-Token": getUserSessionId(),
+      },
+    }
+  );
+  console.log("Pod creation result: ", response.data);
+  return response.data;
+};

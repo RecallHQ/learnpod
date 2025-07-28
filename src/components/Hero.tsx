@@ -109,7 +109,7 @@ const Hero: React.FC<HeroProps> = ({ onCreatePod }) => {
             >
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight whitespace-nowrap">
                 <span className="bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-700 bg-clip-text text-transparent">
-                  AI-Powered Learning From Video
+                  AI-Powered Learning From Videos
                 </span>
               </h1>
 

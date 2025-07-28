@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Plus, Minus, AlertCircle } from 'lucide-react';
-import { CreatePodFormData } from '../types';
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { X, Plus, Minus, AlertCircle } from "lucide-react";
+import { CreatePodFormData } from "../types";
+import { createPod } from "../hooks/usePod";
 
 interface CreatePodModalProps {
   isOpen: boolean;
@@ -9,71 +10,84 @@ interface CreatePodModalProps {
   onSubmit: (data: CreatePodFormData) => void;
 }
 
-const CreatePodModal: React.FC<CreatePodModalProps> = ({ isOpen, onClose, onSubmit }) => {
+const CreatePodModal: React.FC<CreatePodModalProps> = ({
+  isOpen,
+  onClose,
+  onSubmit,
+}) => {
   const [formData, setFormData] = useState<CreatePodFormData>({
-    title: '',
-    description: '',
-    urls: ['']
+    title: "",
+    // description: "",
+    urls: [""],
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
-    
+
     if (!formData.title.trim()) {
-      newErrors.title = 'Pod title is required';
+      newErrors.title = "Pod title is required";
     }
-    
-    if (!formData.description.trim()) {
-      newErrors.description = 'Description is required';
-    }
-    
-    const validUrls = formData.urls.filter(url => url.trim());
+
+    // if (!formData.description.trim()) {
+    //   newErrors.description = "Description is required";
+    // }
+
+    const validUrls = formData.urls.filter((url) => url.trim());
     if (validUrls.length === 0) {
-      newErrors.urls = 'At least one URL is required';
+      newErrors.urls = "At least one URL is required";
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
-    
+
     setIsSubmitting(true);
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    onSubmit({
-      ...formData,
-      urls: formData.urls.filter(url => url.trim())
-    });
-    
-    // Reset form
-    setFormData({ title: '', description: '', urls: [''] });
-    setErrors({});
-    setIsSubmitting(false);
+
+    try {
+      // Call API to create pod
+      await createPod({
+        title: formData.title,
+        urls: formData.urls.filter((url) => url.trim()),
+      });
+
+      // On success, call parent handler
+      onSubmit({
+        ...formData,
+        urls: formData.urls.filter((url) => url.trim()),
+      });
+
+      // Reset form
+      setFormData({ title: "", urls: [""] });
+      setErrors({});
+    } catch (error) {
+      console.error("Pod creation failed:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const addUrlField = () => {
-    setFormData(prev => ({ ...prev, urls: [...prev.urls, ''] }));
+    setFormData((prev) => ({ ...prev, urls: [...prev.urls, ""] }));
   };
 
   const removeUrlField = (index: number) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      urls: prev.urls.filter((_, i) => i !== index)
+      urls: prev.urls.filter((_, i) => i !== index),
     }));
   };
 
   const updateUrl = (index: number, value: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      urls: prev.urls.map((url, i) => i === index ? value : url)
+      urls: prev.urls.map((url, i) => (i === index ? value : url)),
     }));
   };
 
@@ -106,7 +120,9 @@ const CreatePodModal: React.FC<CreatePodModalProps> = ({ isOpen, onClose, onSubm
             {/* Header */}
             <div className="sticky top-0 bg-white rounded-t-2xl border-b border-gray-200 p-6">
               <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-gray-900">Create New Pod</h2>
+                <h2 className="text-2xl font-bold text-gray-900">
+                  Create New Pod
+                </h2>
                 <button
                   onClick={onClose}
                   className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
@@ -126,7 +142,9 @@ const CreatePodModal: React.FC<CreatePodModalProps> = ({ isOpen, onClose, onSubm
                 <input
                   type="text"
                   value={formData.title}
-                  onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, title: e.target.value }))
+                  }
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter your pod title..."
                 />
@@ -139,7 +157,7 @@ const CreatePodModal: React.FC<CreatePodModalProps> = ({ isOpen, onClose, onSubm
               </div>
 
               {/* Description */}
-              <div className="mb-6">
+              {/* <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Description *
                 </label>
@@ -156,7 +174,7 @@ const CreatePodModal: React.FC<CreatePodModalProps> = ({ isOpen, onClose, onSubm
                     {errors.description}
                   </p>
                 )}
-              </div>
+              </div> */}
 
               {/* URLs */}
               <div className="mb-6">
@@ -185,7 +203,7 @@ const CreatePodModal: React.FC<CreatePodModalProps> = ({ isOpen, onClose, onSubm
                     </div>
                   ))}
                 </div>
-                
+
                 <button
                   type="button"
                   onClick={addUrlField}
@@ -194,7 +212,7 @@ const CreatePodModal: React.FC<CreatePodModalProps> = ({ isOpen, onClose, onSubm
                   <Plus className="w-4 h-4 mr-1" />
                   Add another URL
                 </button>
-                
+
                 {errors.urls && (
                   <p className="mt-1 text-sm text-red-600 flex items-center">
                     <AlertCircle className="w-4 h-4 mr-1" />
@@ -208,9 +226,12 @@ const CreatePodModal: React.FC<CreatePodModalProps> = ({ isOpen, onClose, onSubm
                 <div className="flex items-start">
                   <AlertCircle className="w-5 h-5 text-yellow-600 mr-2 mt-0.5" />
                   <div>
-                    <p className="text-sm font-medium text-yellow-800">Public Visibility</p>
+                    <p className="text-sm font-medium text-yellow-800">
+                      Public Visibility
+                    </p>
                     <p className="text-sm text-yellow-700">
-                      This pod will be publicly visible to all users. Make sure you're comfortable sharing this content.
+                      This pod will be publicly visible to all users. Make sure
+                      you're comfortable sharing this content.
                     </p>
                   </div>
                 </div>
@@ -230,7 +251,7 @@ const CreatePodModal: React.FC<CreatePodModalProps> = ({ isOpen, onClose, onSubm
                   disabled={isSubmitting}
                   className="flex-1 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
                 >
-                  {isSubmitting ? 'Creating...' : 'Create Pod'}
+                  {isSubmitting ? "Creating..." : "Create Pod"}
                 </button>
               </div>
             </form>
