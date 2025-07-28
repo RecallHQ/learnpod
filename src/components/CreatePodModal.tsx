@@ -18,7 +18,7 @@ const CreatePodModal: React.FC<CreatePodModalProps> = ({
   const [formData, setFormData] = useState<CreatePodFormData>({
     title: "",
     // description: "",
-    urls: [""],
+    video_urls: [""],
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -34,7 +34,7 @@ const CreatePodModal: React.FC<CreatePodModalProps> = ({
     //   newErrors.description = "Description is required";
     // }
 
-    const validUrls = formData.urls.filter((url) => url.trim());
+    const validUrls = formData.video_urls.filter((url) => url.trim());
     if (validUrls.length === 0) {
       newErrors.urls = "At least one URL is required";
     }
@@ -54,17 +54,17 @@ const CreatePodModal: React.FC<CreatePodModalProps> = ({
       // Call API to create pod
       await createPod({
         title: formData.title,
-        urls: formData.urls.filter((url) => url.trim()),
+        urls: formData.video_urls.filter((url) => url.trim()),
       });
 
       // On success, call parent handler
       onSubmit({
         ...formData,
-        urls: formData.urls.filter((url) => url.trim()),
+        video_urls: formData.video_urls.filter((url) => url.trim()),
       });
 
       // Reset form
-      setFormData({ title: "", urls: [""] });
+      setFormData({ title: "", video_urls: [""] });
       setErrors({});
     } catch (error) {
       console.error("Pod creation failed:", error);
@@ -74,20 +74,20 @@ const CreatePodModal: React.FC<CreatePodModalProps> = ({
   };
 
   const addUrlField = () => {
-    setFormData((prev) => ({ ...prev, urls: [...prev.urls, ""] }));
+    setFormData((prev) => ({ ...prev, urls: [...prev.video_urls, ""] }));
   };
 
   const removeUrlField = (index: number) => {
     setFormData((prev) => ({
       ...prev,
-      urls: prev.urls.filter((_, i) => i !== index),
+      urls: prev.video_urls.filter((_, i) => i !== index),
     }));
   };
 
   const updateUrl = (index: number, value: string) => {
     setFormData((prev) => ({
       ...prev,
-      urls: prev.urls.map((url, i) => (i === index ? value : url)),
+      urls: prev.video_urls.map((url, i) => (i === index ? value : url)),
     }));
   };
 
@@ -182,7 +182,7 @@ const CreatePodModal: React.FC<CreatePodModalProps> = ({
                   Video URLs *
                 </label>
                 <div className="space-y-3">
-                  {formData.urls.map((url, index) => (
+                  {formData.video_urls.map((url, index) => (
                     <div key={index} className="flex gap-2">
                       <input
                         type="url"
@@ -191,7 +191,7 @@ const CreatePodModal: React.FC<CreatePodModalProps> = ({
                         className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="https://www.youtube.com/watch?v=..."
                       />
-                      {formData.urls.length > 1 && (
+                      {formData.video_urls.length > 1 && (
                         <button
                           type="button"
                           onClick={() => removeUrlField(index)}
