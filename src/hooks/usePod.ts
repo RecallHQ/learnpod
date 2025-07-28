@@ -191,7 +191,7 @@ export const getUsage = async (): Promise<
 
 export const createPod = async (podData: {
   title: string;
-  urls: string[];
+  video_urls: string[];
 }): Promise<PodResponseData> => {
   console.log("Creating pod with data:", podData);
   const response = await axios.post<PodResponseData>(

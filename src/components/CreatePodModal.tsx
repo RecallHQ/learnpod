@@ -54,7 +54,7 @@ const CreatePodModal: React.FC<CreatePodModalProps> = ({
       // Call API to create pod
       await createPod({
         title: formData.title,
-        urls: formData.video_urls.filter((url) => url.trim()),
+        video_urls: formData.video_urls.filter((url) => url.trim()),
       });
 
       // On success, call parent handler
