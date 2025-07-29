@@ -44,7 +44,17 @@ const PodCard: React.FC<PodCardProps> = memo(
     };
 
     const getStatusConfig = (status: Pod["status"]) => {
-      switch (status) {
+      if (!status) {
+        return {
+          icon: Clock,
+          text: "Loading...",
+          color: "bg-gray-500/90 text-white",
+          dotColor: "bg-gray-400",
+        };
+      }
+      const normalizedStatus = status.trim().toLowerCase();
+
+      switch (normalizedStatus) {
         case "ready":
           return {
             icon: CheckCircle,
@@ -65,6 +75,14 @@ const PodCard: React.FC<PodCardProps> = memo(
             text: "Error",
             color: "bg-red-500/90 text-white",
             dotColor: "bg-red-400",
+          };
+        default:
+          console.warn("Unknown status:", status);
+          return {
+            icon: AlertCircle,
+            text: "Loading...",
+            color: "bg-gray-500/90 text-white",
+            dotColor: "bg-gray-400",
           };
       }
     };
@@ -192,19 +210,21 @@ const PodCard: React.FC<PodCardProps> = memo(
           </motion.div>
 
           {/* Status Badge */}
-          <motion.div
-            className="absolute top-4 left-4"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: animationDelay + 0.2, duration: 0.4 }}
-          >
-            <div
-              className={`flex items-center px-3 py-1 ${statusConfig.color} backdrop-blur-sm text-sm font-medium rounded-full shadow-lg`}
+          {statusConfig && (
+            <motion.div
+              className="absolute top-4 left-4"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: animationDelay + 0.2, duration: 0.4 }}
             >
-              <StatusIcon className="w-3 h-3 mr-1" />
-              {statusConfig.text}
-            </div>
-          </motion.div>
+              <div
+                className={`flex items-center px-3 py-1 ${statusConfig.color} backdrop-blur-sm text-sm font-medium rounded-full shadow-lg`}
+              >
+                <statusConfig.icon className="w-3 h-3 mr-1" />
+                {statusConfig.text}
+              </div>
+            </motion.div>
+          )}
 
           {/* Follow Button */}
           <motion.div

@@ -11,7 +11,7 @@ export interface Pod {
   //createdAt: Date;
   //interactions: number;
   //followers: number;
-  status: "ready" | "processing" | "error"; //| 'uploading' | 'error';
+  status?: "ready" | "processing" | "error"; //| 'uploading' | 'error';
   //isFollowing?: boolean;
 }
 
@@ -22,6 +22,7 @@ export interface PodResponseData {
   image: string;
   video_path: string;
   introduction: string;
+  status?: string;
 }
 
 export interface QueryResponse {

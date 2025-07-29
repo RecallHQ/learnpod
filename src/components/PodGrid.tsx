@@ -117,7 +117,10 @@ const PodGrid: React.FC<PodGridProps> = ({
               }}
             >
               <PodCard
-                pod={pod}
+                pod={{
+                  ...pod,
+                  status: pod.status || "processing", // Default to processing
+                }}
                 onClick={handlePodClick}
                 onToggleFollow={onToggleFollow}
                 onShare={onShare}

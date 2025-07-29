@@ -204,5 +204,8 @@ export const createPod = async (podData: {
     }
   );
   console.log("Pod creation result: ", response.data);
-  return response.data;
+  return {
+    ...response.data,
+    status: response.data.status?.trim().toLowerCase(),
+  };
 };
