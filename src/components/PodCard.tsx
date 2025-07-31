@@ -149,7 +149,7 @@ const PodCard: React.FC<PodCardProps> = memo(
       <motion.div
         className={`group cursor-pointer bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 ${
           isClicked ? "z-50 relative" : ""
-        }`}
+        } ${pod.status == "processing" && "cursor-not-allowed"}`}
         onClick={handleClick}
         style={{
           willChange: "transform",
@@ -173,14 +173,25 @@ const PodCard: React.FC<PodCardProps> = memo(
       >
         {/* Thumbnail Container */}
         <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-50">
-          <motion.img
-            src={getPublicImageUrl(pod.image)}
-            alt={pod.title}
-            className="w-full h-full object-cover"
-            loading="lazy"
-            whileHover={prefersReducedMotion ? undefined : { scale: 1.1 }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
-          />
+          {pod.status == "processing" ? (
+            <motion.img
+              src="./placeholder.jpg"
+              alt={pod.title}
+              className="w-full h-full object-cover"
+              loading="lazy"
+              whileHover={prefersReducedMotion ? undefined : { scale: 1.1 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+            />
+          ) : (
+            <motion.img
+              src={getPublicImageUrl(pod.image)}
+              alt={pod.title}
+              className="w-full h-full object-cover"
+              loading="lazy"
+              whileHover={prefersReducedMotion ? undefined : { scale: 1.1 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+            />
+          )}
 
           {/* Gradient Overlay */}
           <motion.div

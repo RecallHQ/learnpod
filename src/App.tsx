@@ -195,7 +195,9 @@ const HomePage: React.FC = () => {
   };
 
   const handlePodClick = (pod: Pod) => {
-    navigate(`/pod/${pod.id}`);
+    if (pod.status != "processing") {
+      navigate(`/pod/${pod.id}`);
+    }
   };
 
   const handleSearch = (query: string) => {
