@@ -166,7 +166,7 @@ export const submitQueryFeedback = async (feedbackData: {
 };
 
 export const getUsage = async (): Promise<
-  Record<string, { queries: number }>
+  Record<string, { queries: number; views: number }>
 > => {
   try {
     const response = await axios.get(`${API_BASE_URL}/usage`, {
@@ -175,10 +175,13 @@ export const getUsage = async (): Promise<
       },
     });
 
-    const usageData: Record<string, { queries: number }> = {};
+    const usageData: Record<string, { queries: number; views: number }> = {};
     for (const [key, value] of Object.entries(response.data.usage)) {
       if (key.startsWith("pod_")) {
-        usageData[key] = { queries: (value as any).queries || 0 };
+        usageData[key] = {
+          queries: (value as any).queries || 0,
+          views: (value as any).views || 0,
+        };
       }
     }
 

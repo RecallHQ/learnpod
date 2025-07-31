@@ -124,10 +124,12 @@ const HomePage: React.FC = () => {
         const mergedPods = podsData.map((pod) => {
           const usageKey = `pod_${pod.id}`;
           const queryCount = usageResponse[usageKey]?.queries || 0;
+          const viewsCount = usageResponse[usageKey]?.views || 0;
 
           return {
             ...pod,
             queries: queryCount,
+            views: viewsCount,
           };
         });
 
@@ -178,6 +180,7 @@ const HomePage: React.FC = () => {
       tags: ["Demo tags"],
       image: "image_path",
       queries: 0,
+      views: 0,
       //description: formData.description,
       //thumbnail: `https://images.pexels.com/photos/${Math.floor(Math.random() * 1000000)}/pexels-photo-${Math.floor(Math.random() * 1000000)}.jpeg?auto=compress&cs=tinysrgb&w=400`,
       //category: 'General',
