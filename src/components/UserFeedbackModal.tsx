@@ -9,6 +9,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { UserFeedbackFormData } from "../types";
+import { feedback } from "../hooks/usePod";
 
 interface UserFeedbackModalProps {
   isOpen: boolean;
@@ -66,6 +67,7 @@ const UserFeedbackModal: React.FC<UserFeedbackModalProps> = ({
   const [errors, setErrors] = useState<Partial<UserFeedbackFormData>>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [hoveredStar, setHoveredStar] = useState(0);
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
 
   const validateForm = (): boolean => {
     const newErrors: Partial<UserFeedbackFormData> = {};
@@ -90,18 +92,33 @@ const UserFeedbackModal: React.FC<UserFeedbackModalProps> = ({
     if (!validateForm()) return;
 
     setIsSubmitting(true);
+    setSubmissionError(null);
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      // Prepare data for API (note: API expects "comments" instead of "feedback")
+      const apiData = {
+        name: formData.name,
+        email: formData.email,
+        rating: formData.rating,
+        category: formData.category,
+        comments: formData.feedback,
+      };
 
-    onSubmit(formData);
-    setIsSubmitting(false);
-    setIsSubmitted(true);
+      // Call the actual API
+      const result = await feedback(apiData);
 
-    // Auto close after success
-    setTimeout(() => {
-      handleClose();
-    }, 2000);
+      if (result.success) {
+        onSubmit(formData);
+        setIsSubmitted(true);
+      } else {
+        setSubmissionError("Failed to submit feedback. Please try again.");
+      }
+    } catch (error) {
+      setSubmissionError("An error occurred while submitting your feedback.");
+      console.error("Feedback submission error:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleClose = () => {

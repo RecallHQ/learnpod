@@ -328,7 +328,13 @@ const PodCard: React.FC<PodCardProps> = memo(
                 {/* Interactions Count */}
                 <div className="flex items-center text-gray-500 py-4">
                   <Eye className="w-3 h-3 mr-1" />
-                  <span className="font-medium">{pod.views} Interactions</span>
+                  {pod.status == "processing" ? (
+                    <span className="font-medium">0 Interactions</span>
+                  ) : (
+                    <span className="font-medium">
+                      {pod.views} Interactions
+                    </span>
+                  )}
                 </div>
               </div>
             </div>

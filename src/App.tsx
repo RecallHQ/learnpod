@@ -273,7 +273,7 @@ const HomePage: React.FC = () => {
         showHero={showHero}
       /> */}
 
-      <div className="flex">
+      <div className="flex max-w-6xl mx-auto">
         <SearchBar onSearch={handleSearch} />
         <ActionButtons onCreatePod={handleCreatePod} />
       </div>
