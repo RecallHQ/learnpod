@@ -121,6 +121,7 @@ export const queryPodStreaming = async (
     reader.releaseLock();
   }
 };
+
 export const queryPod = async (
   knowledge_base_id: string,
   query: string,
@@ -161,6 +162,23 @@ export const submitQueryFeedback = async (feedbackData: {
       },
     }
   );
+  console.log("Feedback submission result: ", response.data);
+  return { success: response.data.success };
+};
+
+export const feedback = async (feedbackData: {
+  name: string;
+  email: string;
+  rating: number;
+  category: string;
+  comments: string;
+}): Promise<{ success: boolean }> => {
+  console.log("Submitting feedback with data:", feedbackData);
+  const response = await axios.post(`${API_BASE_URL}/feedback`, feedbackData, {
+    headers: {
+      "X-Session-Token": getUserSessionId(),
+    },
+  });
   console.log("Feedback submission result: ", response.data);
   return { success: response.data.success };
 };

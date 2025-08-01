@@ -11,7 +11,9 @@ import {
   Zap,
 } from "lucide-react";
 import { ChatMessage } from "../types";
+import { submitQueryFeedback } from "../hooks/usePod";
 import FeedbackModal from "./FeedbackModal";
+import { useParams } from "react-router-dom";
 
 interface ChatInterfaceProps {
   messages: ChatMessage[];
@@ -50,6 +52,8 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
   const [selectedMessageId, setSelectedMessageId] = useState<string>("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const { podId } = useParams<{ podId: string }>();
 
   useEffect(() => {
     scrollToBottom();
@@ -105,8 +109,30 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
     // Voice recording logic would go here
   };
 
+  const findUserQuestion = (aiMessageId: string) => {
+    const aiIndex = messages.findIndex((m) => m.id === aiMessageId);
+    if (aiIndex > 0 && messages[aiIndex - 1].type === "user") {
+      return messages[aiIndex - 1].question || "";
+    }
+    return "";
+  };
+
   const handleThumbsUp = (messageId: string) => {
+    const aiMessage = messages.find((m) => m.id === messageId);
+    if (!aiMessage) return;
+
+    // Update UI state first
     onFeedback(messageId, "like");
+
+    // Submit to backend
+    submitQueryFeedback({
+      knowledge_base_id: Number(podId),
+      query: findUserQuestion(messageId),
+      response: aiMessage.answer || "",
+      thumbs_up: true,
+    }).catch((error) => {
+      console.error("Feedback submission error:", error);
+    });
   };
 
   const handleThumbsDown = (messageId: string) => {
@@ -114,11 +140,26 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
     setFeedbackModalOpen(true);
   };
 
-  // Update the handleFeedbackSubmit function
   const handleFeedbackSubmit = (feedbackText: string, category: string) => {
-    if (selectedMessageId) {
-      onFeedback(selectedMessageId, "dislike", feedbackText, category);
-    }
+    if (!selectedMessageId) return;
+
+    const aiMessage = messages.find((m) => m.id === selectedMessageId);
+    if (!aiMessage) return;
+
+    // Update UI state first
+    onFeedback(selectedMessageId, "dislike", feedbackText, category);
+
+    // Submit to backend
+    submitQueryFeedback({
+      knowledge_base_id: Number(podId),
+      query: findUserQuestion(selectedMessageId),
+      response: aiMessage.answer || "",
+      thumbs_up: false,
+      comments: `Category: ${category}\nFeedback: ${feedbackText}`,
+    }).catch((error) => {
+      console.error("Feedback submission error:", error);
+    });
+
     setFeedbackModalOpen(false);
     setSelectedMessageId("");
   };
