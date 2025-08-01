@@ -4,7 +4,7 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Pod, CreatePodFormData, PodResponseData } from "./types";
 import { useModal } from "./hooks/useModal";
 import Hero from "./components/Hero";
-import SearchFilter from "./components/SearchFilter";
+// import SearchFilter from "./components/SearchFilter";
 import PodGrid from "./components/PodGrid";
 import CreatePodModal from "./components/CreatePodModal";
 import PodDetail from "./components/PodDetail";
@@ -12,6 +12,8 @@ import PerformanceDebugger from "./components/PerformanceDebugger";
 import ShareModal from "./components/ShareModal";
 import { getPods, getPodById, getUsage } from "./hooks/usePod";
 import { getUserSessionId } from "./utils/cookieUtils";
+import ActionButtons from "./components/ActionButton";
+import SearchBar from "./components/SearchBar";
 
 // Shared Pod Page Component
 const SharedPodPage: React.FC = () => {
@@ -263,13 +265,18 @@ const HomePage: React.FC = () => {
       </AnimatePresence>
 
       {/* Search and Filter */}
-      <SearchFilter
+      {/* <SearchFilter
         onSearch={handleSearch}
         onFilter={handleFilter}
         onCreatePod={handleCreatePod}
         onShowHero={handleShowHero}
         showHero={showHero}
-      />
+      /> */}
+
+      <div className="flex">
+        <SearchBar onSearch={handleSearch} />
+        <ActionButtons onCreatePod={handleCreatePod} />
+      </div>
 
       {/* Pod Grid */}
 

@@ -61,3 +61,11 @@ export interface CreatePodFormData {
   // description: string;
   video_urls: string[];
 }
+
+export interface UserFeedbackFormData {
+  name: string;
+  email: string;
+  rating: number;
+  category: string;
+  feedback: string;
+}
