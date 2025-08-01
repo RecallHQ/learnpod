@@ -179,14 +179,14 @@ const PodDetail: React.FC<PodDetailProps> = ({ id, onBack }) => {
 
             {/* Pod Info */}
             <div className="bg-white rounded-lg shadow-sm p-6">
-              <h1 className="text-2xl font-bold text-gray-900 mb-3">
+              <h1 className="text-xl lg:text-2xl font-bold text-gray-900 mb-3">
                 {podData.title}
               </h1>
 
               {/* <p className="text-gray-600 mb-4">{pod.description}</p> */}
 
               {/* URLs */}
-              <div className="mb-4 space-x-4">
+              <div className="mb-4 flex items-center gap-4">
                 {/* <h3 className="text-sm font-medium text-gray-700 mb-2">
                   Source URLs:
                 </h3> */}
@@ -207,7 +207,7 @@ const PodDetail: React.FC<PodDetailProps> = ({ id, onBack }) => {
                 {podData.tags.map((tag, index) => (
                   <span
                     key={index}
-                    className="bg-blue-100 px-4 py-1 rounded-lg"
+                    className="bg-blue-100 px-4 py-2 rounded-lg text-xs md:text-sm"
                   >
                     {tag}
                   </span>

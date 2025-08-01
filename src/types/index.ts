@@ -24,6 +24,8 @@ export interface PodResponseData {
   video_path: string;
   introduction: string;
   status?: string;
+  queries: number;
+  views: number;
 }
 
 export interface QueryResponse {

@@ -17,7 +17,7 @@ const VideoIndexLogo: React.FC<{}> = ({}) => {
 };
 const Hero: React.FC<HeroProps> = ({ onCreatePod }) => {
   return (
-    <section className="relative h-[55vh] md:h-[45vh] lg:h-[40vh] flex items-center justify-center overflow-hidden">
+    <section className="relative h-[55vh] md:h-[45vh] lg:h-[40vh] flex items-center justify-center overflow-hidden mb-4">
       {/* Animated Light Gradient Background */}
       <motion.div
         className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50"
@@ -107,7 +107,7 @@ const Hero: React.FC<HeroProps> = ({ onCreatePod }) => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
             >
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight whitespace-nowrap">
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight whitespace-nowrap text-wrap md:text-nowrap">
                 <span className="bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-700 bg-clip-text text-transparent">
                   AI-Powered Learning From Videos
                 </span>
@@ -159,7 +159,7 @@ const Hero: React.FC<HeroProps> = ({ onCreatePod }) => {
             transition={{ duration: 0.8, delay: 0.4 }}
           >
             {/* Main Visual Container */}
-            <div className="relative w-48 h-48 md:w-64 md:h-64 lg:w-72 lg:h-72 translate-x-8 lg:translate-x-12">
+            <div className="relative w-48 h-48 md:w-64 md:h-64 lg:w-72 lg:h-72 translate-x-8 lg:translate-x-12 right-[120px] md:right-[350px] lg:right-0">
               {/* Outer Glow Ring */}
               <motion.div
                 className="absolute right-0 inset-0 rounded-full bg-gradient-to-r from-blue-200/40 via-indigo-200/40 to-purple-200/40 blur-3xl"
