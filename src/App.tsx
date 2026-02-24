@@ -14,6 +14,7 @@ import { getUserSessionId } from "./utils/cookieUtils";
 import SearchBar from "./components/SearchBar";
 import FeatureDeck from "./components/FeatureDeck";
 import DummyComponent from "./components/DummyComponent";
+import VideoDemo from "./components/VideoDemo";
 
 // Shared Pod Page Component
 const SharedPodPage: React.FC = () => {
@@ -340,6 +341,7 @@ const HomePage: React.FC<HomePageProps> = ({
         </div>
       </section>
 
+      <VideoDemo />
       <FeatureDeck />
       <DummyComponent />
 
