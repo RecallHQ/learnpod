@@ -128,18 +128,18 @@ const PodCard: React.FC<PodCardProps> = memo(
       return prefersReducedMotion
         ? {}
         : {
-            whileHover: {
-              y: -8,
-              scale: 1.02,
-              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.15)",
-              transition: {
-                type: "spring",
-                stiffness: 300,
-                damping: 20,
-              },
+          whileHover: {
+            y: -8,
+            scale: 1.02,
+            boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.15)",
+            transition: {
+              type: "spring",
+              stiffness: 300,
+              damping: 20,
             },
-            whileTap: { scale: 0.98 },
-          };
+          },
+          whileTap: { scale: 0.98 },
+        };
     };
 
     const statusConfig = getStatusConfig(pod.status);
@@ -147,32 +147,31 @@ const PodCard: React.FC<PodCardProps> = memo(
 
     return (
       <motion.div
-        className={`group cursor-pointer bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 ${
-          isClicked ? "z-50 relative" : ""
-        } ${pod.status == "processing" && "cursor-not-allowed"}`}
+        className={`group cursor-pointer bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl shadow-md hover:shadow-2xl dark:shadow-[0_18px_45px_rgba(15,23,42,0.55)] dark:hover:shadow-[0_26px_70px_rgba(15,23,42,0.8)] transition-all duration-300 overflow-hidden border border-white/60 dark:border-slate-700/70 hover:bg-[#2EC4B6]/15 dark:hover:bg-[#2EC4B6]/20 ${isClicked ? "z-50 relative" : ""
+          } ${pod.status == "processing" && "cursor-not-allowed"}`}
         onClick={handleClick}
         style={{
           willChange: "transform",
           transformOrigin: "center center",
           transformStyle: "preserve-3d",
         }}
-        // animate={getCardAnimations()}
-        // {...(!prefersReducedMotion && !isClicked ? {
-        //   whileHover: {
-        //     y: -8,
-        //     scale: 1.02,
-        //     boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.15)",
-        //     transition: {
-        //       type: "spring",
-        //       stiffness: 300,
-        //       damping: 20,
-        //     },
-        //   },
-        //   whileTap: { scale: 0.98 }
-        // } : {})}
+      // animate={getCardAnimations()}
+      // {...(!prefersReducedMotion && !isClicked ? {
+      //   whileHover: {
+      //     y: -8,
+      //     scale: 1.02,
+      //     boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.15)",
+      //     transition: {
+      //       type: "spring",
+      //       stiffness: 300,
+      //       damping: 20,
+      //     },
+      //   },
+      //   whileTap: { scale: 0.98 }
+      // } : {})}
       >
         {/* Thumbnail Container */}
-        <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-50">
+        <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-slate-800 dark:to-slate-900">
           {pod.status == "processing" ? (
             <motion.img
               src="./placeholder.jpg"
@@ -221,7 +220,7 @@ const PodCard: React.FC<PodCardProps> = memo(
           </motion.div>
 
           {/* Status Badge */}
-          {statusConfig && (
+          {/* {statusConfig && (
             <motion.div
               className="absolute top-4 left-4"
               initial={{ opacity: 0, x: -20 }}
@@ -235,7 +234,7 @@ const PodCard: React.FC<PodCardProps> = memo(
                 {statusConfig.text}
               </div>
             </motion.div>
-          )}
+          )} */}
 
           {/* Follow Button */}
           <motion.div
@@ -247,7 +246,7 @@ const PodCard: React.FC<PodCardProps> = memo(
             {/* Share Button */}
             <motion.button
               onClick={handleShareClick}
-              className="flex items-center px-2 py-1 backdrop-blur-sm text-xs font-medium rounded-full shadow-lg transition-all duration-200 bg-white/90 text-gray-700 hover:bg-blue-50/90 hover:text-blue-700"
+              className="flex items-center px-2 py-1 backdrop-blur-sm text-xs font-medium rounded-full shadow-lg transition-all duration-200 bg-white/90 dark:bg-slate-900/80 text-gray-700 dark:text-slate-200 hover:bg-blue-50/90 hover:text-blue-700 dark:hover:bg-slate-800/80 dark:hover:text-sky-300"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -280,7 +279,7 @@ const PodCard: React.FC<PodCardProps> = memo(
         >
           {/* Title */}
           <motion.h3
-            className="font-bold text-gray-900 text-lg mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors duration-300 leading-tight"
+            className="font-bold text-gray-900 dark:text-slate-100 text-lg mb-3 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-sky-300 transition-colors duration-300 leading-tight"
             whileHover={prefersReducedMotion ? undefined : { scale: 1.02 }}
             transition={{ duration: 0.2 }}
           >
@@ -299,7 +298,10 @@ const PodCard: React.FC<PodCardProps> = memo(
 
           <div className="flex items-center text-xs flex-wrap gap-2">
             {pod.tags.map((tag, index) => (
-              <span key={index} className="bg-blue-100/80 px-4 py-1 rounded-lg">
+              <span
+                key={index}
+                className="bg-blue-100/80 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 px-4 py-1 rounded-lg"
+              >
                 {tag}
               </span>
             ))}
@@ -307,7 +309,7 @@ const PodCard: React.FC<PodCardProps> = memo(
 
           {/* Meta Information */}
           <motion.div
-            className="flex items-center justify-between text-xs text-gray-500 space-y-2"
+            className="flex items-center justify-between text-xs text-gray-500 dark:text-slate-400 space-y-2"
             initial={{ opacity: 0, y: 5 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: animationDelay + 0.3, duration: 0.4 }}
@@ -326,7 +328,7 @@ const PodCard: React.FC<PodCardProps> = memo(
               </div> */}
 
                 {/* Interactions Count */}
-                <div className="flex items-center text-gray-500 py-4">
+                <div className="flex items-center text-gray-500 dark:text-slate-400 py-4">
                   <Eye className="w-3 h-3 mr-1" />
                   {pod.status == "processing" ? (
                     <span className="font-medium">0 Interactions</span>
@@ -344,9 +346,8 @@ const PodCard: React.FC<PodCardProps> = memo(
         {/* Hover Glow Effect */}
         {!prefersReducedMotion && (
           <motion.div
-            className={`absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-500/10 to-indigo-500/10 opacity-0 group-hover:opacity-100 pointer-events-none ${
-              isClicked ? "opacity-20" : ""
-            }`}
+            className={`absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-500/10 to-indigo-500/10 opacity-0 group-hover:opacity-100 pointer-events-none ${isClicked ? "opacity-20" : ""
+              }`}
             transition={{ duration: 0.3 }}
           />
         )}

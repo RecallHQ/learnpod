@@ -1,18 +1,16 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import { Routes, Route, useNavigate, useParams } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
-import { Pod, CreatePodFormData, PodResponseData } from "./types";
-import { useModal } from "./hooks/useModal";
+import { Search } from "lucide-react";
+import { Pod, PodResponseData } from "./types";
 import Hero from "./components/Hero";
 // import SearchFilter from "./components/SearchFilter";
 import PodGrid from "./components/PodGrid";
-import CreatePodModal from "./components/CreatePodModal";
 import PodDetail from "./components/PodDetail";
 import PerformanceDebugger from "./components/PerformanceDebugger";
 import ShareModal from "./components/ShareModal";
-import { getPods, getPodById, getUsage } from "./hooks/usePod";
+import { getPodById } from "./hooks/usePod";
 import { getUserSessionId } from "./utils/cookieUtils";
-import ActionButtons from "./components/ActionButton";
 import SearchBar from "./components/SearchBar";
 
 // Shared Pod Page Component
@@ -101,108 +99,150 @@ const HomePage: React.FC<HomePageProps> = ({
   onToggleTheme,
 }) => {
   const navigate = useNavigate();
-  const [pods, setPods] = useState<Pod[] | null>(null);
+  const featuredRef = useRef<HTMLDivElement | null>(null);
+  const [pods, setPods] = useState<Pod[]>([
+    {
+      id: "pod-1",
+      title: "Mastering React Hooks in 25 Minutes",
+      tags: ["React", "Hooks", "Frontend"],
+      image:
+        "/home/azureuser/recallstore/recall-api/../recallhq/learnpod_static/placeholder.jpg",
+      queries: 124,
+      views: 310,
+      status: "ready",
+    },
+    {
+      id: "pod-2",
+      title: "Python for Data Analysis: Pandas Power Tips",
+      tags: ["Python", "Data", "Pandas"],
+      image:
+        "/home/azureuser/recallstore/recall-api/../recallhq/learnpod_static/placeholder.jpg",
+      queries: 98,
+      views: 245,
+      status: "ready",
+    },
+    {
+      id: "pod-3",
+      title: "Design Systems: From Tokens to Components",
+      tags: ["Design", "UX", "Systems"],
+      image:
+        "/home/azureuser/recallstore/recall-api/../recallhq/learnpod_static/placeholder.jpg",
+      queries: 57,
+      views: 180,
+      status: "ready",
+    },
+    {
+      id: "pod-4",
+      title: "Intro to Machine Learning Concepts for Builders",
+      tags: ["ML", "Foundations", "AI"],
+      image:
+        "/home/azureuser/recallstore/recall-api/../recallhq/learnpod_static/placeholder.jpg",
+      queries: 76,
+      views: 222,
+      status: "ready",
+    },
+    {
+      id: "pod-5",
+      title: "Next.js App Router Deep Dive",
+      tags: ["Next.js", "Routing", "SSR"],
+      image:
+        "/home/azureuser/recallstore/recall-api/../recallhq/learnpod_static/placeholder.jpg",
+      queries: 132,
+      views: 355,
+      status: "ready",
+    },
+    {
+      id: "pod-6",
+      title: "Building Accessible Interfaces That Scale",
+      tags: ["Accessibility", "UI", "WCAG"],
+      image:
+        "/home/azureuser/recallstore/recall-api/../recallhq/learnpod_static/placeholder.jpg",
+      queries: 41,
+      views: 120,
+      status: "ready",
+    },
+    {
+      id: "pod-7",
+      title: "TypeScript Patterns for Real-World Apps",
+      tags: ["TypeScript", "Patterns", "Code"],
+      image:
+        "/home/azureuser/recallstore/recall-api/../recallhq/learnpod_static/placeholder.jpg",
+      queries: 66,
+      views: 198,
+      status: "ready",
+    },
+    {
+      id: "pod-8",
+      title: "Product Strategy: Turning Insights into Roadmaps",
+      tags: ["Product", "Strategy", "Growth"],
+      image:
+        "/home/azureuser/recallstore/recall-api/../recallhq/learnpod_static/placeholder.jpg",
+      queries: 52,
+      views: 142,
+      status: "ready",
+    },
+    {
+      id: "pod-9",
+      title: "Figma to Code: Prototyping That Ships",
+      tags: ["Figma", "Prototyping", "Design"],
+      image:
+        "/home/azureuser/recallstore/recall-api/../recallhq/learnpod_static/placeholder.jpg",
+      queries: 89,
+      views: 271,
+      status: "ready",
+    },
+  ]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterOption, setFilterOption] = useState("recent");
   const [shareModalPod, setShareModalPod] = useState<Pod | null>(null);
-  const [usageData, setUsageData] = useState<Record<
-    string,
-    { queries: number }
-  > | null>(null);
-
-  // Moved useModal to top level - always called unconditionally
-  const {
-    isOpen: isCreateModalOpen,
-    openModal: openCreateModal,
-    closeModal: closeCreateModal,
-  } = useModal();
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
 
   const prefersReducedMotion = useReducedMotion();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [podsData, usageResponse] = await Promise.all([
-          getPods(),
-          getUsage(),
-        ]);
+  // NOTE: API fetching is paused while we use mock data.
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const [podsData, usageResponse] = await Promise.all([
+  //         getPods(),
+  //         getUsage(),
+  //       ]);
 
-        setUsageData(usageResponse);
+  //       setUsageData(usageResponse);
 
-        // Merge query counts with pods
-        const mergedPods = podsData.map((pod) => {
-          const usageKey = `pod_${pod.id}`;
-          const queryCount = usageResponse[usageKey]?.queries || 0;
-          const viewsCount = usageResponse[usageKey]?.views || 0;
+  //       // Merge query counts with pods
+  //       const mergedPods = podsData.map((pod) => {
+  //         const usageKey = `pod_${pod.id}`;
+  //         const queryCount = usageResponse[usageKey]?.queries || 0;
+  //         const viewsCount = usageResponse[usageKey]?.views || 0;
 
-          return {
-            ...pod,
-            queries: queryCount,
-            views: viewsCount,
-          };
-        });
+  //         return {
+  //           ...pod,
+  //           queries: queryCount,
+  //           views: viewsCount,
+  //         };
+  //       });
 
-        setPods(mergedPods);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+  //       setPods(mergedPods);
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     }
+  //   };
 
-    fetchData();
-  }, []);
+  //   fetchData();
+  // }, []);
 
   // Filter and sort pods
   const filteredPods = useMemo(() => {
-    if (!pods) return []; // Handle null case
-
-    let filtered = pods.filter((pod) =>
+    return pods.filter((pod) =>
       pod.title.toLowerCase().includes(searchQuery.toLowerCase())
     );
+  }, [pods, searchQuery]);
 
-    switch (filterOption) {
-      case "alphabetical":
-        filtered.sort((a, b) => a.title.localeCompare(b.title));
-        break;
-      case "most-accessed":
-        // filtered.sort((a, b) => b.interactions - a.interactions);
-        break;
-      case "category":
-        // filtered.sort((a, b) => a.category.localeCompare(b.category));
-        break;
-      case "recent":
-      default:
-        // filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-        break;
-    }
-
-    return filtered;
-  }, [pods, searchQuery, filterOption]);
-
-  const handleCreatePod = () => {
-    openCreateModal();
-  };
-
-  const handlePodSubmit = (formData: CreatePodFormData) => {
-    const newPod: Pod = {
-      id: Date.now().toString(),
-      title: formData.title,
-      tags: ["Demo tags"],
-      image: "image_path",
-      queries: 0,
-      views: 0,
-      //description: formData.description,
-      //thumbnail: `https://images.pexels.com/photos/${Math.floor(Math.random() * 1000000)}/pexels-photo-${Math.floor(Math.random() * 1000000)}.jpeg?auto=compress&cs=tinysrgb&w=400`,
-      //category: 'General',
-      //urls: formData.urls,
-      //createdAt: new Date(),
-      //interactions: 0,
-      //followers: Math.floor(Math.random() * 100),
-      //status: 'ready',
-      //isFollowing: false
-    };
-
-    setPods((prev) => [newPod, ...prev]);
-    closeCreateModal();
+  const handleExplorePods = () => {
+    featuredRef.current?.scrollIntoView({
+      behavior: prefersReducedMotion ? "auto" : "smooth",
+      block: "start",
+    });
   };
 
   const handlePodClick = (pod: Pod) => {
@@ -213,10 +253,6 @@ const HomePage: React.FC<HomePageProps> = ({
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-  };
-
-  const handleFilter = (filter: string) => {
-    setFilterOption(filter);
   };
 
   // Handle pod following
@@ -253,144 +289,54 @@ const HomePage: React.FC<HomePageProps> = ({
         transition={{ duration: 0.5 }}
       >
         <Hero
-          onCreatePod={handleCreatePod}
+          onCreatePod={handleExplorePods}
           isDarkMode={isDarkMode}
           onToggleTheme={onToggleTheme}
         />
       </motion.div>
 
-      {/* Search and Filter */}
-      {/* <SearchFilter
-        onSearch={handleSearch}
-        onFilter={handleFilter}
-        onCreatePod={handleCreatePod}
-      /> */}
+      <section ref={featuredRef} className="max-w-6xl mx-auto px-4 pb-16">
+        <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-[var(--app-fg)]">
+              Featured Pods
+            </h2>
+            <p className="text-sm sm:text-base text-slate-500 mt-2">
+              Curated picks to get you learning faster.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setIsSearchVisible((prev) => !prev)}
+            className="inline-flex items-center justify-center h-11 w-11 rounded-full border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 text-slate-700 dark:text-slate-200 shadow-sm transition hover:bg-white hover:text-slate-900 dark:hover:bg-slate-900 dark:hover:text-white hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2EC4B6]/70"
+            aria-label={
+              isSearchVisible ? "Hide search" : "Show search"
+            }
+          >
+            <Search className="h-5 w-5" />
+          </button>
+        </div>
 
-      <div className="flex max-w-6xl mx-auto">
-        <SearchBar onSearch={handleSearch} />
-        <ActionButtons onCreatePod={handleCreatePod} />
-      </div>
-
-      {/* Pod Grid */}
-
-      {pods == null ? (
-        <motion.div
-          className="text-center py-20"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{
-            duration: prefersReducedMotion ? 0.2 : 0.6,
-            ease: "easeOut",
-          }}
-        >
+        {isSearchVisible && (
           <motion.div
-            className="w-32 h-32 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg"
-            animate={
-              prefersReducedMotion
-                ? undefined
-                : {
-                  scale: [1, 1.05, 1],
-                  rotate: [0, 5, -5, 0],
-                }
-            }
-            transition={
-              prefersReducedMotion
-                ? undefined
-                : {
-                  duration: 4,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }
-            }
+            className="mt-6"
+            initial={{ opacity: 0, y: prefersReducedMotion ? 0 : -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: prefersReducedMotion ? 0.2 : 0.35 }}
           >
-            {/* Replaced Pla with a simple SVG spinner */}
-            <svg
-              className="animate-spin h-12 w-12 text-blue-600"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              ></circle>
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
-            </svg>
+            <SearchBar onSearch={handleSearch} />
           </motion.div>
+        )}
 
-          <motion.h3
-            className="text-2xl font-bold text-gray-700 mb-3"
-            initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              delay: prefersReducedMotion ? 0 : 0.2,
-              duration: prefersReducedMotion ? 0.2 : 0.5,
-            }}
-          >
-            Fetching pods...
-          </motion.h3>
-
-          <motion.p
-            className="text-gray-500 text-lg"
-            initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              delay: prefersReducedMotion ? 0 : 0.4,
-              duration: prefersReducedMotion ? 0.2 : 0.5,
-            }}
-          >
-            Please wait while we load your data.
-          </motion.p>
-
-          {/* Animated dots for loading indicator */}
-          {!prefersReducedMotion && (
-            <motion.div
-              className="flex justify-center space-x-2 mt-6"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6, duration: 0.5 }}
-            >
-              {[...Array(3)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="w-2 h-2 bg-blue-400 rounded-full"
-                  animate={{
-                    scale: [1, 1.5, 1],
-                    opacity: [0.5, 1, 0.5],
-                  }}
-                  transition={{
-                    duration: 1.5,
-                    repeat: Infinity,
-                    delay: i * 0.2,
-                  }}
-                />
-              ))}
-            </motion.div>
-          )}
-        </motion.div>
-      ) : (
-        <PodGrid
-          pods={filteredPods}
-          onPodClick={handlePodClick}
-          onToggleFollow={handleToggleFollow}
-          onShare={handlePodShare}
-        />
-      )}
-
-      {/* Create Pod Modal */}
-      <CreatePodModal
-        isOpen={isCreateModalOpen}
-        onClose={closeCreateModal}
-        onSubmit={handlePodSubmit}
-      />
+        <div className="mt-8">
+          <PodGrid
+            pods={filteredPods}
+            onPodClick={handlePodClick}
+            onToggleFollow={handleToggleFollow}
+            onShare={handlePodShare}
+          />
+        </div>
+      </section>
 
       {/* Share Modal */}
       {shareModalPod && (
