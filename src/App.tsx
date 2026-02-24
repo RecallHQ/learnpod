@@ -12,6 +12,8 @@ import ShareModal from "./components/ShareModal";
 import { getPodById } from "./hooks/usePod";
 import { getUserSessionId } from "./utils/cookieUtils";
 import SearchBar from "./components/SearchBar";
+import FeatureDeck from "./components/FeatureDeck";
+import DummyComponent from "./components/DummyComponent";
 
 // Shared Pod Page Component
 const SharedPodPage: React.FC = () => {
@@ -337,6 +339,9 @@ const HomePage: React.FC<HomePageProps> = ({
           />
         </div>
       </section>
+
+      <FeatureDeck />
+      <DummyComponent />
 
       {/* Share Modal */}
       {shareModalPod && (
