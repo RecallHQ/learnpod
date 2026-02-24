@@ -3,18 +3,32 @@ import React from "react";
 interface HeaderProps {
   isDarkMode: boolean;
   onToggleTheme: () => void;
+  variant?: "overlay" | "solid";
 }
 
-const Header: React.FC<HeaderProps> = ({ isDarkMode, onToggleTheme }) => {
+const Header: React.FC<HeaderProps> = ({
+  isDarkMode,
+  onToggleTheme,
+  variant = "overlay",
+}) => {
+  const headerClass =
+    variant === "solid"
+      ? "bg-[var(--app-surface)]/90 backdrop-blur-md border-b border-[var(--app-border)] shadow-sm"
+      : "bg-transparent";
+
+  const toggleClass =
+    variant === "solid"
+      ? "border border-[var(--app-border)] bg-[var(--app-surface)]/80 hover:border-gray-400"
+      : "border border-white/20 bg-white/10 hover:border-white/40 hover:bg-white/15";
 
   return (
-    <header className="w-full bg-[var(--app-surface)]/80 backdrop-blur-sm border-b border-[var(--app-border)]">
+    <header className={`w-full transition-colors duration-300 ${headerClass}`}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <img src="/logoo.png" alt="LearnPod logo" className="h-8 w-auto" />
-          <span className="text-lg font-semibold text-[var(--app-fg)]">
+        <div className="flex items-center gap-2">
+          <span className="text-lg sm:text-xl font-black tracking-[0.05em] uppercase text-[var(--app-fg)]">
             LearnPod
           </span>
+
         </div>
 
         <button
@@ -22,7 +36,7 @@ const Header: React.FC<HeaderProps> = ({ isDarkMode, onToggleTheme }) => {
           onClick={onToggleTheme}
           aria-label="Toggle theme"
           aria-pressed={isDarkMode}
-          className="h-10 w-10 rounded-full border border-[var(--app-border)] bg-[var(--app-surface)] shadow-sm flex items-center justify-center text-[var(--app-fg)] hover:border-gray-400 transition-colors"
+          className={`h-10 w-10 rounded-full shadow-sm backdrop-blur-md flex items-center justify-center text-[var(--app-fg)] transition-colors ${toggleClass}`}
         >
           {isDarkMode ? (
             <svg

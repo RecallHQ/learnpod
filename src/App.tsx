@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { Routes, Route, useNavigate, useParams } from "react-router-dom";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { Pod, CreatePodFormData, PodResponseData } from "./types";
 import { useModal } from "./hooks/useModal";
 import Hero from "./components/Hero";
@@ -14,7 +14,6 @@ import { getPods, getPodById, getUsage } from "./hooks/usePod";
 import { getUserSessionId } from "./utils/cookieUtils";
 import ActionButtons from "./components/ActionButton";
 import SearchBar from "./components/SearchBar";
-import Header from "./components/Header";
 
 // Shared Pod Page Component
 const SharedPodPage: React.FC = () => {
@@ -92,7 +91,15 @@ const SharedPodPage: React.FC = () => {
 };
 
 // Home Page Component
-const HomePage: React.FC = () => {
+interface HomePageProps {
+  isDarkMode: boolean;
+  onToggleTheme: () => void;
+}
+
+const HomePage: React.FC<HomePageProps> = ({
+  isDarkMode,
+  onToggleTheme,
+}) => {
   const navigate = useNavigate();
   const [pods, setPods] = useState<Pod[] | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -218,10 +225,10 @@ const HomePage: React.FC = () => {
       prev.map((pod) =>
         pod.id === podId
           ? {
-              ...pod,
-              //isFollowing: !pod.isFollowing,
-              //followers: pod.isFollowing ? pod.followers - 1 : pod.followers + 1
-            }
+            ...pod,
+            //isFollowing: !pod.isFollowing,
+            //followers: pod.isFollowing ? pod.followers - 1 : pod.followers + 1
+          }
           : pod
       )
     );
@@ -245,7 +252,11 @@ const HomePage: React.FC = () => {
         initial={{ opacity: 1, height: "auto" }}
         transition={{ duration: 0.5 }}
       >
-        <Hero onCreatePod={handleCreatePod} />
+        <Hero
+          onCreatePod={handleCreatePod}
+          isDarkMode={isDarkMode}
+          onToggleTheme={onToggleTheme}
+        />
       </motion.div>
 
       {/* Search and Filter */}
@@ -278,18 +289,18 @@ const HomePage: React.FC = () => {
               prefersReducedMotion
                 ? undefined
                 : {
-                    scale: [1, 1.05, 1],
-                    rotate: [0, 5, -5, 0],
-                  }
+                  scale: [1, 1.05, 1],
+                  rotate: [0, 5, -5, 0],
+                }
             }
             transition={
               prefersReducedMotion
                 ? undefined
                 : {
-                    duration: 4,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }
             }
           >
             {/* Replaced Pla with a simple SVG spinner */}
@@ -382,11 +393,13 @@ const HomePage: React.FC = () => {
       />
 
       {/* Share Modal */}
-      <ShareModal
-        isOpen={!!shareModalPod}
-        onClose={() => setShareModalPod(null)}
-        pod={shareModalPod!}
-      />
+      {shareModalPod && (
+        <ShareModal
+          isOpen={!!shareModalPod}
+          onClose={() => setShareModalPod(null)}
+          pod={shareModalPod}
+        />
+      )}
     </>
   );
 };
@@ -432,13 +445,16 @@ function App() {
   return (
     <div className="min-h-screen bg-[var(--app-bg)] text-[var(--app-fg)]">
       <PerformanceDebugger enabled={showPerformanceDebugger} />
-      <Header
-        isDarkMode={isDarkMode}
-        onToggleTheme={() => setIsDarkMode((prev) => !prev)}
-      />
-
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route
+          path="/"
+          element={
+            <HomePage
+              isDarkMode={isDarkMode}
+              onToggleTheme={() => setIsDarkMode((prev) => !prev)}
+            />
+          }
+        />
         <Route path="/pod/:podId" element={<SharedPodPage />} />
       </Routes>
     </div>

@@ -1,15 +1,47 @@
 import React from "react";
 import { motion, useReducedMotion } from "framer-motion";
+import Header from "./Header";
 
 interface HeroProps {
   onCreatePod: () => void;
+  isDarkMode: boolean;
+  onToggleTheme: () => void;
 }
 
-const Hero: React.FC<HeroProps> = ({ onCreatePod }) => {
+const Hero: React.FC<HeroProps> = ({
+  onCreatePod,
+  isDarkMode,
+  onToggleTheme,
+}) => {
   const prefersReducedMotion = useReducedMotion();
+  const sectionRef = React.useRef<HTMLElement | null>(null);
+  const [isHeroInView, setIsHeroInView] = React.useState(true);
+
+  React.useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsHeroInView(entry.isIntersecting),
+      { threshold: 0.2 }
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <section className="relative min-h-[70vh] lg:min-h-[85vh] flex items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8">
+    <section
+      ref={sectionRef}
+      className="relative min-h-[70vh] lg:min-h-[85vh] flex items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8"
+    >
+      <div className="fixed inset-x-0 top-0 z-40">
+        <Header
+          isDarkMode={isDarkMode}
+          onToggleTheme={onToggleTheme}
+          variant={isHeroInView ? "overlay" : "solid"}
+        />
+      </div>
       <div className="pointer-events-none absolute -top-36 right-[-28%] h-[22rem] w-[42rem] sm:h-[28rem] sm:w-[54rem] lg:h-[34rem] lg:w-[76rem] rounded-full bg-gradient-to-br from-[#2EC4B6]/45 via-[#2EC4B6]/20 to-transparent blur-[90px] opacity-70" />
       <div className="relative z-10 max-w-5xl w-full text-center flex flex-col items-center">
         <motion.h1
