@@ -412,6 +412,13 @@ const HomePage: React.FC = () => {
 
 function App() {
   const [showPerformanceDebugger, setShowPerformanceDebugger] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    if (typeof window === "undefined") return false;
+    const storedTheme = localStorage.getItem("theme");
+    if (storedTheme === "dark") return true;
+    if (storedTheme === "light") return false;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  });
 
   useEffect(() => {
     const sessionId = getUserSessionId();
@@ -430,10 +437,24 @@ function App() {
     return () => window.removeEventListener("keydown", handleKeyPress);
   }, []);
 
+  useEffect(() => {
+    const root = document.documentElement;
+    if (isDarkMode) {
+      root.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      root.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  }, [isDarkMode]);
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[var(--app-bg)] text-[var(--app-fg)]">
       <PerformanceDebugger enabled={showPerformanceDebugger} />
-      <Header />
+      <Header
+        isDarkMode={isDarkMode}
+        onToggleTheme={() => setIsDarkMode((prev) => !prev)}
+      />
 
       <Routes>
         <Route path="/" element={<HomePage />} />

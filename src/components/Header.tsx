@@ -1,23 +1,28 @@
 import React from "react";
 
-const Header: React.FC = () => {
-  const [isDarkMode, setIsDarkMode] = React.useState(false);
+interface HeaderProps {
+  isDarkMode: boolean;
+  onToggleTheme: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ isDarkMode, onToggleTheme }) => {
 
   return (
-    <header className="w-full bg-white/80 backdrop-blur-sm border-b border-gray-100">
+    <header className="w-full bg-[var(--app-surface)]/80 backdrop-blur-sm border-b border-[var(--app-border)]">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <img src="/logoo.png" alt="LearnPod logo" className="h-8 w-auto" />
-          <span className="text-lg font-semibold text-gray-900">
+          <span className="text-lg font-semibold text-[var(--app-fg)]">
             LearnPod
           </span>
         </div>
 
         <button
           type="button"
-          onClick={() => setIsDarkMode((prev) => !prev)}
+          onClick={onToggleTheme}
           aria-label="Toggle theme"
-          className="h-10 w-10 rounded-full border border-gray-200 bg-white shadow-sm flex items-center justify-center text-gray-700 hover:text-gray-900 hover:border-gray-300 transition-colors"
+          aria-pressed={isDarkMode}
+          className="h-10 w-10 rounded-full border border-[var(--app-border)] bg-[var(--app-surface)] shadow-sm flex items-center justify-center text-[var(--app-fg)] hover:border-gray-400 transition-colors"
         >
           {isDarkMode ? (
             <svg

@@ -7,6 +7,30 @@
   font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
 }
 
+:root {
+  --app-bg: #f8fafc;
+  --app-fg: #0f172a;
+  --app-surface: #ffffff;
+  --app-muted: #475569;
+  --app-border: #e2e8f0;
+  --app-accent: #3b82f6;
+}
+
+.dark {
+  --app-bg: #0b1220;
+  --app-fg: #e2e8f0;
+  --app-surface: #0f172a;
+  --app-muted: #94a3b8;
+  --app-border: #1f2937;
+  --app-accent: #60a5fa;
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--app-bg);
+  color: var(--app-fg);
+}
+
 /* Line clamping utility */
 .line-clamp-2 {
   display: -webkit-box;
