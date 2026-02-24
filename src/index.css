@@ -14,6 +14,10 @@
   --app-muted: #475569;
   --app-border: #e2e8f0;
   --app-accent: #3b82f6;
+  --accent-glow: rgba(46, 196, 182, 0.22);
+  --accent-glow-soft: rgba(46, 196, 182, 0.0);
+  --mouse-x: 50vw;
+  --mouse-y: 35vh;
 }
 
 .dark {
@@ -23,12 +27,38 @@
   --app-muted: #94a3b8;
   --app-border: #1f2937;
   --app-accent: #60a5fa;
+  --accent-glow: rgba(46, 196, 182, 0.32);
   color-scheme: dark;
 }
 
 body {
   background-color: var(--app-bg);
   color: var(--app-fg);
+}
+
+.mouse-glow {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 360px;
+  height: 360px;
+  transform: translate3d(
+    calc(var(--mouse-x) - 180px),
+    calc(var(--mouse-y) - 180px),
+    0
+  );
+  background: radial-gradient(closest-side, var(--accent-glow), var(--accent-glow-soft));
+  filter: blur(10px);
+  opacity: 0.7;
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 0.4s ease;
+  will-change: transform;
+}
+
+.app-content {
+  position: relative;
+  z-index: 1;
 }
 
 /* Line clamping utility */

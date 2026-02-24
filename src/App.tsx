@@ -413,6 +413,7 @@ function App() {
     if (storedTheme === "light") return false;
     return window.matchMedia("(prefers-color-scheme: dark)").matches;
   });
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     const sessionId = getUserSessionId();
@@ -442,21 +443,70 @@ function App() {
     }
   }, [isDarkMode]);
 
+  useEffect(() => {
+    const root = document.documentElement;
+    let rafId = 0;
+    let currentX = window.innerWidth * 0.5;
+    let currentY = window.innerHeight * 0.35;
+    let targetX = currentX;
+    let targetY = currentY;
+
+    const setVars = (x: number, y: number) => {
+      root.style.setProperty("--mouse-x", `${x}px`);
+      root.style.setProperty("--mouse-y", `${y}px`);
+    };
+
+    setVars(currentX, currentY);
+
+    const handlePointerMove = (event: PointerEvent) => {
+      targetX = event.clientX;
+      targetY = event.clientY;
+
+      if (prefersReducedMotion) {
+        currentX = targetX;
+        currentY = targetY;
+        setVars(currentX, currentY);
+      }
+    };
+
+    const tick = () => {
+      currentX += (targetX - currentX) * 0.12;
+      currentY += (targetY - currentY) * 0.12;
+      setVars(currentX, currentY);
+      rafId = window.requestAnimationFrame(tick);
+    };
+
+    window.addEventListener("pointermove", handlePointerMove, { passive: true });
+    if (!prefersReducedMotion) {
+      rafId = window.requestAnimationFrame(tick);
+    }
+
+    return () => {
+      window.removeEventListener("pointermove", handlePointerMove);
+      if (rafId) {
+        window.cancelAnimationFrame(rafId);
+      }
+    };
+  }, [prefersReducedMotion]);
+
   return (
-    <div className="min-h-screen bg-[var(--app-bg)] text-[var(--app-fg)]">
-      <PerformanceDebugger enabled={showPerformanceDebugger} />
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <HomePage
-              isDarkMode={isDarkMode}
-              onToggleTheme={() => setIsDarkMode((prev) => !prev)}
-            />
-          }
-        />
-        <Route path="/pod/:podId" element={<SharedPodPage />} />
-      </Routes>
+    <div className="min-h-screen bg-[var(--app-bg)] text-[var(--app-fg)] relative overflow-hidden">
+      <div className="mouse-glow" aria-hidden="true" />
+      <div className="app-content">
+        <PerformanceDebugger enabled={showPerformanceDebugger} />
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <HomePage
+                isDarkMode={isDarkMode}
+                onToggleTheme={() => setIsDarkMode((prev) => !prev)}
+              />
+            }
+          />
+          <Route path="/pod/:podId" element={<SharedPodPage />} />
+        </Routes>
+      </div>
     </div>
   );
 }
