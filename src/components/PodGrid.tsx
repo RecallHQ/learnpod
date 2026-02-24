@@ -5,7 +5,13 @@ import React, {
   useCallback,
   useRef,
 } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 import { Play } from "lucide-react";
 import { Pod } from "../types";
 import PodCard from "./PodCard";
@@ -17,22 +23,48 @@ interface PodGridProps {
   onShare?: (pod: Pod) => void;
 }
 
+interface CardDepthState {
+  rotateX: number;
+  rotateY: number;
+  scale: number;
+  glowX: number;
+  glowY: number;
+}
+
+const DEFAULT_CARD_DEPTH: CardDepthState = {
+  rotateX: 0,
+  rotateY: 0,
+  scale: 1,
+  glowX: 50,
+  glowY: 50,
+};
+
 const PodGrid: React.FC<PodGridProps> = ({
   pods,
   onPodClick,
   onToggleFollow,
   onShare,
 }) => {
+  const sectionRef = useRef<HTMLDivElement | null>(null);
   const [visiblePods, setVisiblePods] = useState<Pod[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [clickedPodId, setClickedPodId] = useState<string | null>(null);
+  const [activeCardId, setActiveCardId] = useState<string | null>(null);
+  const [canUseHover, setCanUseHover] = useState(false);
+  const [gridPointer, setGridPointer] = useState({ x: 50, y: 50 });
+  const [cardDepth, setCardDepth] = useState<Record<string, CardDepthState>>(
+    {}
+  );
 
-  // Performance optimization: Detect reduced motion preference
   const prefersReducedMotion = useReducedMotion();
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+  const gridFloatY = useTransform(scrollYProgress, [0, 0.5, 1], [10, 0, -10]);
 
-  const podsPerPage = 9; // 3x3 grid max
+  const podsPerPage = 9;
 
-  // Memoize visible pods calculation
   const { currentVisiblePods, hasMore } = useMemo(() => {
     const startIndex = 0;
     const endIndex = currentPage * podsPerPage;
@@ -44,22 +76,41 @@ const PodGrid: React.FC<PodGridProps> = ({
     };
   }, [pods, currentPage, podsPerPage]);
 
-  // Update visible pods when pods change (no animation)
   useEffect(() => {
     setVisiblePods(currentVisiblePods);
   }, [currentVisiblePods]);
 
-  // Memoized load more handler
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const mediaQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const syncHoverCapability = () => setCanUseHover(mediaQuery.matches);
+
+    syncHoverCapability();
+
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener("change", syncHoverCapability);
+    } else {
+      mediaQuery.addListener(syncHoverCapability);
+    }
+
+    return () => {
+      if (mediaQuery.removeEventListener) {
+        mediaQuery.removeEventListener("change", syncHoverCapability);
+      } else {
+        mediaQuery.removeListener(syncHoverCapability);
+      }
+    };
+  }, []);
+
   const loadMore = useCallback(() => {
     setCurrentPage((prev) => prev + 1);
   }, []);
 
-  // Enhanced pod click handler with animation
   const handlePodClick = useCallback(
     (pod: Pod) => {
       setClickedPodId(pod.id);
 
-      // Add a small delay to show the opening animation before navigating
       setTimeout(
         () => {
           console.log("Navigating to pod:", pod.id);
@@ -72,67 +123,205 @@ const PodGrid: React.FC<PodGridProps> = ({
     [onPodClick, prefersReducedMotion]
   );
 
-  // Animation variants for cards
+  const handleGridPointerMove = useCallback(
+    (event: React.MouseEvent<HTMLDivElement>) => {
+      if (prefersReducedMotion || !canUseHover) return;
+
+      const rect = event.currentTarget.getBoundingClientRect();
+      const x = ((event.clientX - rect.left) / rect.width) * 100;
+      const y = ((event.clientY - rect.top) / rect.height) * 100;
+
+      setGridPointer({
+        x: Math.max(0, Math.min(100, x)),
+        y: Math.max(0, Math.min(100, y)),
+      });
+    },
+    [canUseHover, prefersReducedMotion]
+  );
+
+  const resetCardDepth = useCallback((podId: string) => {
+    setCardDepth((prev) => ({
+      ...prev,
+      [podId]: DEFAULT_CARD_DEPTH,
+    }));
+  }, []);
+
+  const handleCardPointerMove = useCallback(
+    (event: React.MouseEvent<HTMLDivElement>, podId: string) => {
+      if (prefersReducedMotion || !canUseHover) return;
+
+      const rect = event.currentTarget.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+
+      const nx = (x / rect.width - 0.5) * 2;
+      const ny = (y / rect.height - 0.5) * 2;
+      const maxTilt = 2.4;
+
+      setCardDepth((prev) => ({
+        ...prev,
+        [podId]: {
+          rotateX: -ny * maxTilt,
+          rotateY: nx * maxTilt,
+          scale: 1.03,
+          glowX: (x / rect.width) * 100,
+          glowY: (y / rect.height) * 100,
+        },
+      }));
+    },
+    [canUseHover, prefersReducedMotion]
+  );
+
   const cardVariants = {
     hidden: {
       opacity: 0,
-      y: prefersReducedMotion ? 0 : 20,
-      scale: prefersReducedMotion ? 1 : 0.95,
+      y: prefersReducedMotion ? 0 : 16,
+      scale: prefersReducedMotion ? 1 : 0.985,
+      filter: prefersReducedMotion ? "blur(0px)" : "blur(6px)",
     },
     visible: {
       opacity: 1,
       y: 0,
       scale: 1,
+      filter: "blur(0px)",
       transition: {
-        duration: prefersReducedMotion ? 0.2 : 0.5,
-        ease: [0.25, 0.46, 0.45, 0.94],
-      },
-    },
-    clicked: {
-      scale: prefersReducedMotion ? 1 : 1.05,
-      rotateY: prefersReducedMotion ? 0 : 5,
-      z: prefersReducedMotion ? 0 : 50,
-      transition: {
-        duration: 0.3,
-        ease: "easeOut",
+        duration: prefersReducedMotion ? 0.2 : 0.52,
+        ease: [0.22, 1, 0.36, 1],
       },
     },
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      {/* Grid Container */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <AnimatePresence initial={false}>
+    <motion.div
+      ref={sectionRef}
+      className="max-w-6xl mx-auto px-4 py-8 relative isolate"
+      onMouseMove={handleGridPointerMove}
+      onMouseLeave={() => {
+        setGridPointer({ x: 50, y: 50 });
+        setActiveCardId(null);
+      }}
+      style={{ y: prefersReducedMotion ? 0 : gridFloatY }}
+    >
+      {!prefersReducedMotion && canUseHover && (
+        <motion.div
+          className="absolute inset-0 -z-10 pointer-events-none rounded-3xl"
+          style={{
+            background: `radial-gradient(560px circle at ${gridPointer.x}% ${gridPointer.y}%, rgba(45, 212, 191, 0.1), rgba(45, 212, 191, 0.03) 36%, rgba(45, 212, 191, 0) 72%)`,
+          }}
+          animate={{ opacity: activeCardId ? 1 : 0.85 }}
+          transition={{ duration: 0.22, ease: "easeOut" }}
+        />
+      )}
+
+      <motion.div
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        initial={{
+          opacity: 0,
+          y: prefersReducedMotion ? 0 : 20,
+          filter: prefersReducedMotion ? "blur(0px)" : "blur(8px)",
+          scale: prefersReducedMotion ? 1 : 0.99,
+        }}
+        whileInView={{
+          opacity: 1,
+          y: 0,
+          filter: "blur(0px)",
+          scale: 1,
+          transition: {
+            duration: prefersReducedMotion ? 0.2 : 0.6,
+            ease: [0.22, 1, 0.36, 1],
+            staggerChildren: prefersReducedMotion ? 0 : 0.06,
+            delayChildren: prefersReducedMotion ? 0 : 0.08,
+          },
+        }}
+        viewport={{ once: true, amount: 0.2 }}
+      >
+        <AnimatePresence>
           {visiblePods.map((pod, index) => (
             <motion.div
               key={pod.id}
-              //variants={cardVariants}
-              initial="hidden"
-              animate={clickedPodId === pod.id ? "clicked" : "visible"}
+              variants={cardVariants}
+              transition={{ delay: prefersReducedMotion ? 0 : index * 0.04 }}
               exit="hidden"
-              style={{
-                transformOrigin: "center center",
-                transformStyle: "preserve-3d",
-              }}
             >
-              <PodCard
-                pod={{
-                  ...pod,
-                  status: pod.status || "processing", // Default to processing
+              <motion.div
+                className="relative rounded-2xl"
+                tabIndex={0}
+                onMouseEnter={() => setActiveCardId(pod.id)}
+                onMouseLeave={() => {
+                  resetCardDepth(pod.id);
+                  if (activeCardId === pod.id) setActiveCardId(null);
                 }}
-                onClick={handlePodClick}
-                onToggleFollow={onToggleFollow}
-                onShare={onShare}
-                animationDelay={prefersReducedMotion ? 0 : index * 0.05}
-                isClicked={clickedPodId === pod.id}
-              />
+                onMouseMove={(event) => handleCardPointerMove(event, pod.id)}
+                onFocusCapture={() => setActiveCardId(pod.id)}
+                onBlurCapture={(event) => {
+                  const next = event.relatedTarget as Node | null;
+                  if (!event.currentTarget.contains(next)) {
+                    resetCardDepth(pod.id);
+                    if (activeCardId === pod.id) setActiveCardId(null);
+                  }
+                }}
+                animate={{
+                  rotateX:
+                    canUseHover && !prefersReducedMotion
+                      ? (cardDepth[pod.id]?.rotateX ?? 0)
+                      : 0,
+                  rotateY:
+                    canUseHover && !prefersReducedMotion
+                      ? (cardDepth[pod.id]?.rotateY ?? 0)
+                      : 0,
+                  scale:
+                    clickedPodId === pod.id
+                      ? 1.035
+                      : activeCardId && activeCardId !== pod.id
+                        ? 0.98
+                        : canUseHover && !prefersReducedMotion
+                          ? (cardDepth[pod.id]?.scale ?? 1)
+                          : 1,
+                  opacity: activeCardId && activeCardId !== pod.id ? 0.7 : 1,
+                  boxShadow:
+                    clickedPodId === pod.id
+                      ? "0 22px 52px -24px rgba(15, 23, 42, 0.42)"
+                      : activeCardId === pod.id
+                        ? `${(cardDepth[pod.id]?.rotateY ?? 0) * 1.8}px ${16 + Math.abs((cardDepth[pod.id]?.rotateX ?? 0) * 1.3)}px 40px -22px rgba(15, 23, 42, 0.34)`
+                        : "0 12px 30px -20px rgba(15, 23, 42, 0.22)",
+                }}
+                transition={{
+                  duration: prefersReducedMotion ? 0.12 : 0.28,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                style={{
+                  transformStyle: "preserve-3d",
+                  perspective: 1200,
+                }}
+              >
+                <PodCard
+                  pod={{
+                    ...pod,
+                    status: pod.status || "processing",
+                  }}
+                  onClick={handlePodClick}
+                  onToggleFollow={onToggleFollow}
+                  onShare={onShare}
+                  animationDelay={prefersReducedMotion ? 0 : index * 0.05}
+                  isClicked={clickedPodId === pod.id}
+                />
+
+                {!prefersReducedMotion && canUseHover && (
+                  <motion.div
+                    className="absolute inset-0 rounded-2xl pointer-events-none"
+                    style={{
+                      background: `radial-gradient(200px circle at ${cardDepth[pod.id]?.glowX ?? 50}% ${cardDepth[pod.id]?.glowY ?? 50}%, rgba(255,255,255,0.34), rgba(255,255,255,0.12) 32%, rgba(255,255,255,0) 70%)`,
+                    }}
+                    animate={{ opacity: activeCardId === pod.id ? 0.56 : 0 }}
+                    transition={{ duration: 0.2, ease: "easeOut" }}
+                  />
+                )}
+              </motion.div>
             </motion.div>
           ))}
         </AnimatePresence>
-      </div>
+      </motion.div>
 
-      {/* Load More Button */}
       {hasMore && (
         <motion.div
           className="flex justify-center mt-16"
@@ -167,7 +356,7 @@ const PodGrid: React.FC<PodGridProps> = ({
                   animate={{ y: [0, -2, 0] }}
                   transition={{ duration: 1.5, repeat: Infinity }}
                 >
-                  ↓
+                  v
                 </motion.div>
               )}
             </span>
@@ -175,7 +364,6 @@ const PodGrid: React.FC<PodGridProps> = ({
         </motion.div>
       )}
 
-      {/* Enhanced Empty State */}
       {pods.length === 0 && (
         <motion.div
           className="text-center py-20"
@@ -233,7 +421,6 @@ const PodGrid: React.FC<PodGridProps> = ({
             Try adjusting your search or create your first pod!
           </motion.p>
 
-          {/* Animated dots with reduced motion support */}
           {!prefersReducedMotion && (
             <motion.div
               className="flex justify-center space-x-2 mt-6"
@@ -260,7 +447,7 @@ const PodGrid: React.FC<PodGridProps> = ({
           )}
         </motion.div>
       )}
-    </div>
+    </motion.div>
   );
 };
 

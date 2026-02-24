@@ -147,7 +147,7 @@ const PodCard: React.FC<PodCardProps> = memo(
 
     return (
       <motion.div
-        className={`group cursor-pointer bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl shadow-md hover:shadow-2xl dark:shadow-[0_18px_45px_rgba(15,23,42,0.55)] dark:hover:shadow-[0_26px_70px_rgba(15,23,42,0.8)] transition-all duration-300 overflow-hidden border border-white/60 dark:border-slate-700/70 hover:bg-[#2EC4B6]/15 dark:hover:bg-[#2EC4B6]/20 ${isClicked ? "z-50 relative" : ""
+        className={`group cursor-pointer bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl shadow-md hover:shadow-2xl dark:shadow-[0_18px_45px_rgba(15,23,42,0.55)] dark:hover:shadow-[0_26px_70px_rgba(15,23,42,0.8)] transition-all duration-300 overflow-hidden border border-white/60 dark:border-slate-700/70 hover:bg-sky-50/85 dark:hover:bg-slate-800/85 ${isClicked ? "z-50 relative" : ""
           } ${pod.status == "processing" && "cursor-not-allowed"}`}
         onClick={handleClick}
         style={{

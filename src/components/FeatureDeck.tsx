@@ -129,7 +129,7 @@ const FeatureDeck: React.FC = () => {
 
   const expansion = useTransform(
     scrollYProgress,
-    [0, 0.3, 0.4, 0.65, 1],
+    [0, 0.3, 0.4, 0.72, 1],
     [0, 1, 1, 0, 0]
   );
 
