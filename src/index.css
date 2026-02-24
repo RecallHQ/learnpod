@@ -61,6 +61,33 @@ body {
   z-index: 1;
 }
 
+/* Accent glass CTA */
+.glass-accent-btn {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.06)),
+    #2EC4B6;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  box-shadow: 0 14px 34px rgba(46, 196, 182, 0.34);
+  backdrop-filter: blur(14px) saturate(130%);
+}
+
+.dark .glass-accent-btn {
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 16px 36px rgba(46, 196, 182, 0.28);
+}
+
+.glass-accent-btn:hover:not(:disabled) {
+  filter: brightness(1.06);
+}
+
+.glass-accent-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+  filter: none;
+}
+
 /* Line clamping utility */
 .line-clamp-2 {
   display: -webkit-box;

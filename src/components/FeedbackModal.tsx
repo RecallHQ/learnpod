@@ -86,7 +86,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose, onSubmit
         >
           {/* Backdrop */}
           <motion.div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/45 dark:bg-black/65 backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -95,7 +95,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose, onSubmit
 
           {/* Modal */}
           <motion.div
-            className="relative bg-white rounded-3xl shadow-2xl w-full max-w-md mx-4 max-h-[80vh] overflow-hidden flex flex-col"
+            className="relative bg-[var(--app-surface)] text-[var(--app-fg)] border border-[var(--app-border)] rounded-3xl shadow-2xl w-full max-w-md mx-4 max-h-[80vh] overflow-hidden flex flex-col"
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -107,27 +107,27 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose, onSubmit
                 <div className="relative px-6 pt-6 pb-4 flex-shrink-0">
                   <button
                     onClick={handleClose}
-                    className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                    className="absolute top-4 right-4 p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors duration-200"
                   >
-                    <X className="w-5 h-5 text-gray-400" />
+                    <X className="w-5 h-5 text-slate-400 dark:text-slate-300" />
                   </button>
                   
                   <div className="flex items-center space-x-3 mb-2">
-                    <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
-                      <MessageSquare className="w-5 h-5 text-orange-600" />
+                    <div className="w-10 h-10 bg-[#2EC4B6]/20 dark:bg-[#2EC4B6]/25 border border-[#2EC4B6]/35 rounded-full flex items-center justify-center">
+                      <MessageSquare className="w-5 h-5 text-[#2EC4B6]" />
                     </div>
                     <div>
-                      <h2 className="text-xl font-semibold text-gray-900">Help us improve</h2>
+                      <h2 className="text-xl font-semibold text-[var(--app-fg)]">Help us improve</h2>
                     </div>
                   </div>
-                  <p className="text-gray-600 text-sm ml-13">
+                  <p className="text-[var(--app-muted)] text-sm ml-[3.25rem]">
                     What could we have done better with this response?
                   </p>
                 </div>
 
                 {/* Form */}
                 <div className="flex-1 overflow-y-auto">
-                  <form onSubmit={handleSubmit} className="px-6 pb-6">
+                  <form onSubmit={handleSubmit} className="px-6 pb-6" data-message-id={messageId}>
                   {/* Category Selection */}
                   <div className="mb-6">
                     <div className="space-y-2">
@@ -138,25 +138,25 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose, onSubmit
                           onClick={() => handleCategorySelect(category.value)}
                           className={`w-full text-left p-4 border-2 rounded-xl transition-all duration-200 ${
                             selectedCategory === category.value
-                              ? 'border-orange-500 bg-orange-50 shadow-sm'
-                              : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                              ? 'border-orange-500 bg-orange-50/90 dark:bg-orange-500/15 shadow-sm'
+                              : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/70'
                           }`}
                           whileHover={{ scale: 1.01 }}
                           whileTap={{ scale: 0.99 }}
                         >
                           <div className="flex items-start justify-between">
                             <div className="flex-1">
-                              <div className="font-medium text-gray-900 mb-1">
+                              <div className="font-medium text-slate-900 dark:text-slate-100 mb-1">
                                 {category.label}
                               </div>
-                              <div className="text-sm text-gray-500">
+                              <div className="text-sm text-slate-500 dark:text-slate-400">
                                 {category.description}
                               </div>
                             </div>
                             <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ml-3 mt-0.5 ${
                               selectedCategory === category.value
                                 ? 'border-orange-500 bg-orange-500'
-                                : 'border-gray-300'
+                                : 'border-slate-300 dark:border-slate-600'
                             }`}>
                               {selectedCategory === category.value && (
                                 <motion.div
@@ -183,14 +183,14 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose, onSubmit
                         exit={{ opacity: 0, height: 0 }}
                         transition={{ duration: 0.3 }}
                       >
-                        <label className="block text-sm font-medium text-gray-700 mb-3">
+                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">
                           Tell us more (optional)
                         </label>
                         <textarea
                           value={feedbackText}
                           onChange={(e) => setFeedbackText(e.target.value)}
                           rows={3}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none transition-all duration-200"
+                          className="w-full px-4 py-3 border border-slate-300 dark:border-slate-700 bg-white/90 dark:bg-slate-900/70 text-slate-900 dark:text-slate-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none transition-all duration-200"
                           placeholder="What specifically could be improved?"
                         />
                       </motion.div>
@@ -198,18 +198,18 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose, onSubmit
                   </AnimatePresence>
 
                   {/* Actions */}
-                  <div className="flex gap-3 sticky bottom-0 bg-white pt-4 -mx-6 px-6">
+                  <div className="flex gap-3 sticky bottom-0 bg-[var(--app-surface)]/95 border-t border-[var(--app-border)] pt-4 -mx-6 px-6">
                     <button
                       type="button"
                       onClick={handleClose}
-                      className="flex-1 px-6 py-3 text-gray-700 font-medium rounded-xl hover:bg-gray-100 transition-colors duration-200"
+                      className="flex-1 px-6 py-3 text-slate-700 dark:text-slate-200 font-medium rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200"
                     >
                       Cancel
                     </button>
                     <motion.button
                       type="submit"
                       disabled={!selectedCategory || isSubmitting}
-                      className="flex-1 px-6 py-3 bg-orange-600 text-white font-medium rounded-xl hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center"
+                      className="flex-1 px-6 py-3 glass-accent-btn font-medium rounded-xl transition-all duration-200 flex items-center justify-center"
                       whileHover={!selectedCategory || isSubmitting ? {} : { scale: 1.02 }}
                       whileTap={!selectedCategory || isSubmitting ? {} : { scale: 0.98 }}
                     >
@@ -238,17 +238,17 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose, onSubmit
                 transition={{ duration: 0.3 }}
               >
                 <motion.div
-                  className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4"
+                  className="w-16 h-16 bg-green-100 dark:bg-green-500/15 rounded-full flex items-center justify-center mx-auto mb-4"
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
                 >
-                  <CheckCircle className="w-8 h-8 text-green-600" />
+                  <CheckCircle className="w-8 h-8 text-green-600 dark:text-green-400" />
                 </motion.div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                <h3 className="text-lg font-semibold text-[var(--app-fg)] mb-2">
                   Thank you for your feedback!
                 </h3>
-                <p className="text-gray-600 text-sm">
+                <p className="text-[var(--app-muted)] text-sm">
                   Your input helps us improve our AI responses.
                 </p>
               </motion.div>

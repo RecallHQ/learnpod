@@ -155,7 +155,9 @@ const UserFeedbackModal: React.FC<UserFeedbackModalProps> = ({
           onMouseEnter={() => handleStarHover(starNumber)}
           onMouseLeave={handleStarLeave}
           className={`p-1 transition-colors duration-200 ${
-            isActive ? "text-yellow-400" : "text-gray-300 hover:text-yellow-300"
+            isActive
+              ? "text-yellow-400"
+              : "text-slate-300 dark:text-slate-600 hover:text-yellow-300 dark:hover:text-yellow-400"
           }`}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
@@ -175,14 +177,14 @@ const UserFeedbackModal: React.FC<UserFeedbackModalProps> = ({
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/45 dark:bg-black/65 backdrop-blur-sm z-50 flex items-center justify-center p-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={handleClose}
         >
           <motion.div
-            className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col"
+            className="bg-[var(--app-surface)] text-[var(--app-fg)] border border-[var(--app-border)] rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col"
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -191,24 +193,24 @@ const UserFeedbackModal: React.FC<UserFeedbackModalProps> = ({
             {!isSubmitted ? (
               <>
                 {/* Header */}
-                <div className="flex-shrink-0 px-6 py-4 border-b border-gray-100">
+                <div className="flex-shrink-0 px-6 py-4 border-b border-[var(--app-border)]">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center">
-                      <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center mr-3">
-                        <MessageSquare className="w-5 h-5 text-white" />
+                      <div className="w-10 h-10 bg-[#2EC4B6]/20 dark:bg-[#2EC4B6]/25 border border-[#2EC4B6]/35 rounded-xl flex items-center justify-center mr-3">
+                        <MessageSquare className="w-5 h-5 text-[#2EC4B6]" />
                       </div>
-                      <h2 className="text-xl font-semibold text-gray-900">
+                      <h2 className="text-xl font-semibold text-[var(--app-fg)]">
                         Share Your Feedback
                       </h2>
                     </div>
                     <button
                       onClick={handleClose}
-                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200"
+                      className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors duration-200"
                     >
-                      <X className="w-5 h-5 text-gray-500" />
+                      <X className="w-5 h-5 text-slate-500 dark:text-slate-300" />
                     </button>
                   </div>
-                  <p className="text-gray-600 text-sm ml-13">
+                  <p className="text-[var(--app-muted)] text-sm ml-[3.25rem]">
                     Help us improve VideoIndex with your thoughts and
                     suggestions
                   </p>
@@ -220,7 +222,7 @@ const UserFeedbackModal: React.FC<UserFeedbackModalProps> = ({
                     {/* Name and Email Row */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                           Name *
                         </label>
                         <input
@@ -232,7 +234,7 @@ const UserFeedbackModal: React.FC<UserFeedbackModalProps> = ({
                               name: e.target.value,
                             }))
                           }
-                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                          className="w-full px-4 py-3 border border-slate-300 dark:border-slate-700 bg-white/90 dark:bg-slate-900/70 text-slate-900 dark:text-slate-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                           placeholder="Your name"
                         />
                         {errors.name && (
@@ -244,7 +246,7 @@ const UserFeedbackModal: React.FC<UserFeedbackModalProps> = ({
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                           Email *
                         </label>
                         <input
@@ -256,7 +258,7 @@ const UserFeedbackModal: React.FC<UserFeedbackModalProps> = ({
                               email: e.target.value,
                             }))
                           }
-                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                          className="w-full px-4 py-3 border border-slate-300 dark:border-slate-700 bg-white/90 dark:bg-slate-900/70 text-slate-900 dark:text-slate-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                           placeholder="your@email.com"
                         />
                         {errors.email && (
@@ -270,7 +272,7 @@ const UserFeedbackModal: React.FC<UserFeedbackModalProps> = ({
 
                     {/* Rating */}
                     <div className="mb-6">
-                      <label className="block text-sm font-medium text-gray-700 mb-3">
+                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">
                         Overall Rating *
                       </label>
                       <div className="flex items-center space-x-1 mb-2">
@@ -278,7 +280,7 @@ const UserFeedbackModal: React.FC<UserFeedbackModalProps> = ({
                       </div>
                       {(formData.rating > 0 || hoveredStar > 0) && (
                         <motion.p
-                          className="text-sm text-gray-600 ml-1"
+                          className="text-sm text-[var(--app-muted)] ml-1"
                           initial={{ opacity: 0, y: -5 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.2 }}
@@ -296,7 +298,7 @@ const UserFeedbackModal: React.FC<UserFeedbackModalProps> = ({
 
                     {/* Category */}
                     <div className="mb-6">
-                      <label className="block text-sm font-medium text-gray-700 mb-3">
+                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">
                         Category *
                       </label>
                       <div className="grid grid-cols-1 gap-2">
@@ -312,16 +314,16 @@ const UserFeedbackModal: React.FC<UserFeedbackModalProps> = ({
                             }
                             className={`text-left p-3 border-2 rounded-xl transition-all duration-200 ${
                               formData.category === category.value
-                                ? "border-blue-500 bg-blue-50 shadow-sm"
-                                : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                                ? "border-blue-500 bg-blue-50/90 dark:bg-blue-500/15 shadow-sm"
+                                : "border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/70"
                             }`}
                             whileHover={{ scale: 1.01 }}
                             whileTap={{ scale: 0.99 }}
                           >
-                            <div className="font-medium text-gray-900 text-sm mb-1">
+                            <div className="font-medium text-slate-900 dark:text-slate-100 text-sm mb-1">
                               {category.label}
                             </div>
-                            <div className="text-xs text-gray-500">
+                            <div className="text-xs text-slate-500 dark:text-slate-400">
                               {category.description}
                             </div>
                           </motion.button>
@@ -337,7 +339,7 @@ const UserFeedbackModal: React.FC<UserFeedbackModalProps> = ({
 
                     {/* Feedback Text */}
                     <div className="mb-6">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                         Your Feedback *
                       </label>
                       <textarea
@@ -349,7 +351,7 @@ const UserFeedbackModal: React.FC<UserFeedbackModalProps> = ({
                           }))
                         }
                         rows={4}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none transition-all duration-200"
+                        className="w-full px-4 py-3 border border-slate-300 dark:border-slate-700 bg-white/90 dark:bg-slate-900/70 text-slate-900 dark:text-slate-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none transition-all duration-200"
                         placeholder="Please share your thoughts, suggestions, or report any issues you've encountered..."
                       />
                       <div className="flex justify-between items-center mt-1">
@@ -361,25 +363,32 @@ const UserFeedbackModal: React.FC<UserFeedbackModalProps> = ({
                         ) : (
                           <div />
                         )}
-                        <span className="text-xs text-gray-400">
+                        <span className="text-xs text-slate-400 dark:text-slate-500">
                           {formData.feedback.length}/500
                         </span>
                       </div>
                     </div>
 
+                    {submissionError && (
+                      <p className="mb-4 text-sm text-red-600 dark:text-red-400 flex items-center">
+                        <AlertCircle className="w-4 h-4 mr-1" />
+                        {submissionError}
+                      </p>
+                    )}
+
                     {/* Actions */}
-                    <div className="flex gap-3 sticky bottom-0 bg-white pt-4 -mx-6 px-6">
+                    <div className="flex gap-3 sticky bottom-0 bg-[var(--app-surface)]/95 border-t border-[var(--app-border)] pt-4 -mx-6 px-6">
                       <button
                         type="button"
                         onClick={handleClose}
-                        className="flex-1 px-6 py-3 text-gray-700 font-medium rounded-xl hover:bg-gray-100 transition-colors duration-200 border border-gray-500"
+                        className="flex-1 px-6 py-3 text-slate-700 dark:text-slate-200 font-medium rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200 border border-slate-300 dark:border-slate-600"
                       >
                         Cancel
                       </button>
                       <motion.button
                         type="submit"
                         disabled={isSubmitting}
-                        className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium rounded-xl hover:from-blue-500 hover:to-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center"
+                        className="flex-1 px-6 py-3 glass-accent-btn font-medium rounded-xl transition-all duration-200 flex items-center justify-center"
                         whileHover={isSubmitting ? {} : { scale: 1.02 }}
                         whileTap={isSubmitting ? {} : { scale: 0.98 }}
                       >
@@ -408,17 +417,17 @@ const UserFeedbackModal: React.FC<UserFeedbackModalProps> = ({
                 transition={{ duration: 0.3 }}
               >
                 <motion.div
-                  className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4"
+                  className="w-16 h-16 bg-green-100 dark:bg-green-500/15 rounded-full flex items-center justify-center mx-auto mb-4"
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
                 >
-                  <CheckCircle className="w-8 h-8 text-green-600" />
+                  <CheckCircle className="w-8 h-8 text-green-600 dark:text-green-400" />
                 </motion.div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                <h3 className="text-lg font-semibold text-[var(--app-fg)] mb-2">
                   Thank you for your feedback!
                 </h3>
-                <p className="text-gray-600 text-sm">
+                <p className="text-[var(--app-muted)] text-sm">
                   We appreciate you taking the time to help us improve
                   VideoIndex.
                 </p>
