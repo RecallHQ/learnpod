@@ -14,6 +14,7 @@ import { getPods, getPodById, getUsage } from "./hooks/usePod";
 import { getUserSessionId } from "./utils/cookieUtils";
 import ActionButtons from "./components/ActionButton";
 import SearchBar from "./components/SearchBar";
+import Header from "./components/Header";
 
 // Shared Pod Page Component
 const SharedPodPage: React.FC = () => {
@@ -432,6 +433,7 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-50">
       <PerformanceDebugger enabled={showPerformanceDebugger} />
+      <Header />
 
       <Routes>
         <Route path="/" element={<HomePage />} />
