@@ -97,7 +97,6 @@ const HomePage: React.FC = () => {
   const [pods, setPods] = useState<Pod[] | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterOption, setFilterOption] = useState("recent");
-  const [showHero, setShowHero] = useState(true);
   const [shareModalPod, setShareModalPod] = useState<Pod | null>(null);
   const [usageData, setUsageData] = useState<Record<
     string,
@@ -196,7 +195,6 @@ const HomePage: React.FC = () => {
     };
 
     setPods((prev) => [newPod, ...prev]);
-    setShowHero(false); // Hide hero only after successful pod creation
     closeCreateModal();
   };
 
@@ -208,9 +206,6 @@ const HomePage: React.FC = () => {
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    if (query.trim()) {
-      setShowHero(false);
-    }
   };
 
   const handleFilter = (filter: string) => {
@@ -237,13 +232,6 @@ const HomePage: React.FC = () => {
     setShareModalPod(pod);
   };
 
-  // Add function to show hero section
-  const handleShowHero = () => {
-    setShowHero(true);
-    setSearchQuery("");
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   // if (pods == null) {
   //   return (
 
@@ -253,25 +241,18 @@ const HomePage: React.FC = () => {
   return (
     <>
       {/* Hero Section */}
-      <AnimatePresence>
-        {showHero && (
-          <motion.div
-            initial={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <Hero onCreatePod={handleCreatePod} />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <motion.div
+        initial={{ opacity: 1, height: "auto" }}
+        transition={{ duration: 0.5 }}
+      >
+        <Hero onCreatePod={handleCreatePod} />
+      </motion.div>
 
       {/* Search and Filter */}
       {/* <SearchFilter
         onSearch={handleSearch}
         onFilter={handleFilter}
         onCreatePod={handleCreatePod}
-        onShowHero={handleShowHero}
-        showHero={showHero}
       /> */}
 
       <div className="flex max-w-6xl mx-auto">
