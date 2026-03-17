@@ -130,7 +130,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, pod }) => {
 
           {/* Modal */}
           <motion.div
-            className="relative bg-white rounded-3xl shadow-2xl w-full max-w-md mx-4 overflow-hidden"
+            className="relative liquid-glass-panel text-[var(--app-fg)] rounded-3xl shadow-2xl w-full max-w-md mx-4 overflow-hidden"
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -140,7 +140,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, pod }) => {
             <div className="relative px-6 pt-6 pb-4">
               <button
                 onClick={handleClose}
-                className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                className="absolute top-4 right-4 p-2 rounded-full transition-colors duration-200"
               >
                 <X className="w-5 h-5 text-gray-400" />
               </button>
@@ -179,7 +179,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, pod }) => {
                     </p> */}
                     <div className="flex items-center mt-2 text-xs text-gray-400">
                       <span>{pod.queries} interactions</span>
-                      {/* <span className="mx-2">•</span>
+                      {/* <span className="mx-2">â€¢</span>
                       <span>{pod.followers} followers</span> */}
                     </div>
                   </div>

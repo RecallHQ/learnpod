@@ -1,8 +1,9 @@
-import React from "react";
+﻿import React from "react";
 
 const VideoDemo: React.FC = () => {
   return (
     <section
+      id="learnpod-action"
       className="max-w-6xl mx-auto px-4 pb-20 pt-6"
       aria-label="Video demonstration"
     >

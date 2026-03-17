@@ -4,6 +4,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Search } from "lucide-react";
 import { Pod, PodResponseData } from "./types";
 import Hero from "./components/Hero";
+import UserFeedbackModal from "./components/UserFeedbackModal";
 // import SearchFilter from "./components/SearchFilter";
 import PodGrid from "./components/PodGrid";
 import PodDetail from "./components/PodDetail";
@@ -102,6 +103,7 @@ const HomePage: React.FC<HomePageProps> = ({
   onToggleTheme,
 }) => {
   const navigate = useNavigate();
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const featuredRef = useRef<HTMLDivElement | null>(null);
   const [pods, setPods] = useState<Pod[]>([
     {
@@ -295,6 +297,7 @@ const HomePage: React.FC<HomePageProps> = ({
           onCreatePod={handleExplorePods}
           isDarkMode={isDarkMode}
           onToggleTheme={onToggleTheme}
+          onOpenFeedback={() => setIsFeedbackOpen(true)}
         />
       </motion.div>
 
@@ -311,7 +314,7 @@ const HomePage: React.FC<HomePageProps> = ({
           <button
             type="button"
             onClick={() => setIsSearchVisible((prev) => !prev)}
-            className="inline-flex items-center justify-center h-11 w-11 rounded-full border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 text-slate-700 dark:text-slate-200 shadow-sm transition hover:bg-white hover:text-slate-900 dark:hover:bg-slate-900 dark:hover:text-white hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2EC4B6]/70"
+            className="inline-flex items-center justify-center h-11 w-11 rounded-full border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 text-slate-700 dark:text-slate-200 shadow-sm transition hover:bg-white hover:text-slate-900 dark:hover:bg-slate-900 dark:hover:text-white hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1e90ff]/70"
             aria-label={
               isSearchVisible ? "Hide search" : "Show search"
             }
@@ -343,8 +346,35 @@ const HomePage: React.FC<HomePageProps> = ({
 
       <VideoDemo />
       <FeatureDeck />
+
+      <section className="max-w-6xl mx-auto px-4 pb-20">
+        <div className="rounded-3xl border border-slate-200/80 dark:border-slate-800/80 bg-white/80 dark:bg-slate-900/70 shadow-[0_30px_80px_-50px_rgba(15,23,42,0.7)] p-6 sm:p-8 backdrop-blur">
+          <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+            <div className="max-w-2xl">
+              <h2 className="text-2xl sm:text-3xl font-semibold text-[var(--app-fg)]">
+                Help shape the next pods
+              </h2>
+              <p className="text-sm sm:text-base text-slate-500 mt-2">
+                Share what you want to learn next. Your input drives new pods, stronger semantic search, and sharper timestamp answers.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsFeedbackOpen(true)}
+              className="inline-flex items-center justify-center rounded-full liquid-glass-btn bg-slate-900 text-white dark:bg-white dark:text-slate-900 px-6 py-3 text-sm font-semibold"
+            >
+              Share Feedback
+            </button>
+          </div>
+        </div>
+      </section>
       <DummyComponent />
 
+      <UserFeedbackModal
+        isOpen={isFeedbackOpen}
+        onClose={() => setIsFeedbackOpen(false)}
+        onSubmit={() => setIsFeedbackOpen(false)}
+      />
       {/* Share Modal */}
       {shareModalPod && (
         <ShareModal

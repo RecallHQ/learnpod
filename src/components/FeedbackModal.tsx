@@ -95,7 +95,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose, onSubmit
 
           {/* Modal */}
           <motion.div
-            className="relative bg-[var(--app-surface)] text-[var(--app-fg)] border border-[var(--app-border)] rounded-3xl shadow-2xl w-full max-w-md mx-4 max-h-[80vh] overflow-hidden flex flex-col"
+            className="relative liquid-glass-panel text-[var(--app-fg)] rounded-3xl shadow-2xl w-full max-w-md mx-4 max-h-[80vh] overflow-hidden flex flex-col"
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -113,8 +113,8 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose, onSubmit
                   </button>
                   
                   <div className="flex items-center space-x-3 mb-2">
-                    <div className="w-10 h-10 bg-[#2EC4B6]/20 dark:bg-[#2EC4B6]/25 border border-[#2EC4B6]/35 rounded-full flex items-center justify-center">
-                      <MessageSquare className="w-5 h-5 text-[#2EC4B6]" />
+                    <div className="w-10 h-10 bg-[#1e90ff]/20 dark:bg-[#1e90ff]/25 border border-[#1e90ff]/35 rounded-full flex items-center justify-center">
+                      <MessageSquare className="w-5 h-5 text-[#1e90ff]" />
                     </div>
                     <div>
                       <h2 className="text-xl font-semibold text-[var(--app-fg)]">Help us improve</h2>
@@ -198,7 +198,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose, onSubmit
                   </AnimatePresence>
 
                   {/* Actions */}
-                  <div className="flex gap-3 sticky bottom-0 bg-[var(--app-surface)]/95 border-t border-[var(--app-border)] pt-4 -mx-6 px-6">
+                  <div className="flex gap-3 sticky bottom-0 liquid-glass-panel border-t border-white/10 pt-4 -mx-6 px-6">
                     <button
                       type="button"
                       onClick={handleClose}
@@ -209,7 +209,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose, onSubmit
                     <motion.button
                       type="submit"
                       disabled={!selectedCategory || isSubmitting}
-                      className="flex-1 px-6 py-3 glass-accent-btn font-medium rounded-xl transition-all duration-200 flex items-center justify-center"
+                      className="flex-1 px-6 py-3 bg-[#1e90ff] text-white liquid-glass-btn liquid-glass-btn--accent font-medium rounded-xl transition-all duration-200 flex items-center justify-center"
                       whileHover={!selectedCategory || isSubmitting ? {} : { scale: 1.02 }}
                       whileTap={!selectedCategory || isSubmitting ? {} : { scale: 0.98 }}
                     >

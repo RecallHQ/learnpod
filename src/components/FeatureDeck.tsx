@@ -76,7 +76,7 @@ const FeatureCard = forwardRef<HTMLDivElement, FeatureCardProps>(
         style={{ x, rotate, scale }}
         className="relative rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white/90 dark:bg-slate-900/80 shadow-[0_20px_60px_-40px_rgba(15,23,42,0.7)] p-6 backdrop-blur"
       >
-        <div className="h-2 w-10 rounded-full bg-gradient-to-r from-[#2EC4B6] via-[#60a5fa] to-[#f59e0b] mb-6" />
+        <div className="h-2 w-10 rounded-full bg-gradient-to-r from-[#1e90ff] via-[#60a5fa] to-[#f59e0b] mb-6" />
         <h3 className="text-xl font-semibold text-[var(--app-fg)] mb-3">
           {feature.title}
         </h3>

@@ -184,7 +184,7 @@ const UserFeedbackModal: React.FC<UserFeedbackModalProps> = ({
           onClick={handleClose}
         >
           <motion.div
-            className="bg-[var(--app-surface)] text-[var(--app-fg)] border border-[var(--app-border)] rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col"
+            className="liquid-glass-panel text-[var(--app-fg)] rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col"
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -196,8 +196,8 @@ const UserFeedbackModal: React.FC<UserFeedbackModalProps> = ({
                 <div className="flex-shrink-0 px-6 py-4 border-b border-[var(--app-border)]">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center">
-                      <div className="w-10 h-10 bg-[#2EC4B6]/20 dark:bg-[#2EC4B6]/25 border border-[#2EC4B6]/35 rounded-xl flex items-center justify-center mr-3">
-                        <MessageSquare className="w-5 h-5 text-[#2EC4B6]" />
+                      <div className="w-10 h-10 bg-[#1e90ff]/20 dark:bg-[#1e90ff]/25 border border-[#1e90ff]/35 rounded-xl flex items-center justify-center mr-3">
+                        <MessageSquare className="w-5 h-5 text-[#1e90ff]" />
                       </div>
                       <h2 className="text-xl font-semibold text-[var(--app-fg)]">
                         Share Your Feedback
@@ -205,7 +205,7 @@ const UserFeedbackModal: React.FC<UserFeedbackModalProps> = ({
                     </div>
                     <button
                       onClick={handleClose}
-                      className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors duration-200"
+                      className="p-2 rounded-lg liquid-glass-btn text-slate-900 dark:text-white"
                     >
                       <X className="w-5 h-5 text-slate-500 dark:text-slate-300" />
                     </button>
@@ -377,18 +377,18 @@ const UserFeedbackModal: React.FC<UserFeedbackModalProps> = ({
                     )}
 
                     {/* Actions */}
-                    <div className="flex gap-3 sticky bottom-0 bg-[var(--app-surface)]/95 border-t border-[var(--app-border)] pt-4 -mx-6 px-6">
+                    <div className="flex gap-3 sticky bottom-0 liquid-glass-panel border-t border-white/10 pt-4 -mx-6 px-6">
                       <button
                         type="button"
                         onClick={handleClose}
-                        className="flex-1 px-6 py-3 text-slate-700 dark:text-slate-200 font-medium rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200 border border-slate-300 dark:border-slate-600"
+                        className="flex-1 px-6 py-3 liquid-glass-btn text-slate-900 dark:text-white font-medium rounded-xl"
                       >
                         Cancel
                       </button>
                       <motion.button
                         type="submit"
                         disabled={isSubmitting}
-                        className="flex-1 px-6 py-3 glass-accent-btn font-medium rounded-xl transition-all duration-200 flex items-center justify-center"
+                        className="flex-1 px-6 py-3 liquid-glass-btn liquid-glass-btn--accent text-white font-medium rounded-xl transition-all duration-200 flex items-center justify-center"
                         whileHover={isSubmitting ? {} : { scale: 1.02 }}
                         whileTap={isSubmitting ? {} : { scale: 0.98 }}
                       >
