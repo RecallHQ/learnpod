@@ -182,7 +182,7 @@ const Hero: React.FC<HeroProps> = ({
                   onClick={onCreatePod}
                   className="inline-flex items-center gap-2 rounded-full liquid-glass-btn liquid-glass-btn--strong bg-foreground text-background px-7 py-4 text-base font-semibold"
                 >
-                  Explore Pods
+                  Explore Videos
                   <ArrowRight className="h-4 w-4" />
                 </button>
                 <button
