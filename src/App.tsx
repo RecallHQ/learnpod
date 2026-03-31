@@ -305,7 +305,7 @@ const HomePage: React.FC<HomePageProps> = ({
         <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-[var(--app-fg)]">
-              Featured Pods
+              Featured Video Pods
             </h2>
             <p className="text-sm sm:text-base text-slate-500 mt-2">
               Curated picks to get you learning faster.
@@ -352,7 +352,7 @@ const HomePage: React.FC<HomePageProps> = ({
           <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
             <div className="max-w-2xl">
               <h2 className="text-2xl sm:text-3xl font-semibold text-[var(--app-fg)]">
-                Help shape the next pods
+                Help shape the next video pods
               </h2>
               <p className="text-sm sm:text-base text-slate-500 mt-2">
                 Share what you want to learn next. Your input drives new pods, stronger semantic search, and sharper timestamp answers.
