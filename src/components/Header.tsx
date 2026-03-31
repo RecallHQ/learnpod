@@ -28,7 +28,7 @@ const Header: React.FC<HeaderProps> = ({
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="text-lg sm:text-xl font-black tracking-[0.05em] uppercase text-[var(--app-fg)]">
-            LearnPod
+            VideoIndex
           </span>
 
         </div>
