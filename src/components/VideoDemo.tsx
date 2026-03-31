@@ -10,7 +10,7 @@ const VideoDemo: React.FC = () => {
       <div className="rounded-3xl border border-slate-200/80 dark:border-slate-800/80 bg-white/80 dark:bg-slate-900/70 shadow-[0_30px_80px_-50px_rgba(15,23,42,0.7)] p-6 sm:p-8 backdrop-blur">
         <div className="max-w-2xl">
           <h2 className="text-2xl sm:text-3xl font-semibold text-[var(--app-fg)]">
-            See LearnPod in action
+            See it in Action
           </h2>
           <p className="text-sm sm:text-base text-slate-500 mt-2">
             A quick walkthrough of conversational search, timestamp answers, and
