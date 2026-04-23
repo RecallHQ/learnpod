@@ -34,6 +34,7 @@ const PodCard: React.FC<PodCardProps> = memo(
     isClicked = false,
   }) => {
     const prefersReducedMotion = useReducedMotion();
+    const [imageError, setImageError] = React.useState(false);
 
     const formatDate = (date: Date) => {
       return date.toLocaleDateString("en-US", {
@@ -172,7 +173,7 @@ const PodCard: React.FC<PodCardProps> = memo(
       >
         {/* Thumbnail Container */}
         <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-slate-800 dark:to-slate-900">
-          {pod.status == "processing" ? (
+          {pod.status == "processing" || imageError ? (
             <motion.img
               src="./placeholder.jpg"
               alt={pod.title}
@@ -187,6 +188,14 @@ const PodCard: React.FC<PodCardProps> = memo(
               alt={pod.title}
               className="w-full h-full object-cover"
               loading="lazy"
+              onError={(e) => {
+                console.error("Image failed to load:", getPublicImageUrl(pod.image));
+                console.error("Error event:", e);
+                setImageError(true);
+              }}
+              onLoad={() => {
+                console.log("Image loaded successfully:", getPublicImageUrl(pod.image));
+              }}
               whileHover={prefersReducedMotion ? undefined : { scale: 1.1 }}
               transition={{ duration: 0.4, ease: "easeOut" }}
             />

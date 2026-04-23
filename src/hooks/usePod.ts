@@ -3,19 +3,32 @@ import { Pod, PodResponseData, QueryResponse } from "../types";
 import axios from "axios";
 import { getUserSessionId } from "../utils/cookieUtils";
 
-const API_BASE_URL = "https://api.videoindex.app";
+const API_BASE_URL = "http://localhost:8000";
 
 export const getPods = async (): Promise<Pod[]> => {
   const response = await axios.get<Pod[]>(
-    `https://api.videoindex.app/knowledge-bases`,
+    `${API_BASE_URL}/knowledge-bases`,
     {
       headers: {
         "X-Session-Token": getUserSessionId(),
       },
     }
   );
-  console.log("Pods fetched: ", response.data);
-  return response.data;
+  console.log("Raw API response:", response.data);
+  
+  // Convert API response to match frontend types
+  const convertedPods: Pod[] = response.data.map((pod) => ({
+    ...pod,
+    id: pod.id.toString(), // Convert int to string
+  }));
+  
+  console.log("Converted pods:", convertedPods);
+  convertedPods.forEach((pod, index) => {
+    console.log(`Pod ${index} - Image path:`, pod.image);
+    console.log(`Pod ${index} - Image path type:`, typeof pod.image);
+    console.log(`Pod ${index} - Image path starts with /recallhq/:`, pod.image.includes('/recallhq/'));
+  });
+  return convertedPods;
 };
 
 export const getPodById = async (id: string): Promise<PodResponseData> => {
@@ -28,8 +41,16 @@ export const getPodById = async (id: string): Promise<PodResponseData> => {
         },
       }
     );
-    console.log("Pod fetched: ", response.data);
-    return response.data;
+    console.log("Raw pod response:", response.data);
+    
+    // Convert API response to match frontend types
+    const convertedPod: PodResponseData = {
+      ...response.data,
+      id: response.data.id.toString(), // Convert int to string
+    };
+    
+    console.log("Converted pod:", convertedPod);
+    return convertedPod;
   } catch (error) {
     console.error("Error fetching pod by ID:", error);
     if (axios.isAxiosError(error)) {

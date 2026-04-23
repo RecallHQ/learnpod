@@ -50,21 +50,43 @@ const PodDetail: React.FC<PodDetailProps> = ({ id, onBack }) => {
 
   // Handle immediate video updates from streaming
   useEffect(() => {
+    console.log('Setting up video update callback');
     if (onVideoUpdate) {
       onVideoUpdate((videoPath: string, timestamp: string) => {
-        console.log("Immediate video update:", videoPath, timestamp);
+        console.log("Immediate video update callback called:", videoPath, timestamp);
         const newVideoUrl = getPublicVideoUrl(videoPath);
+        console.log("New video URL:", newVideoUrl);
+        console.log("Current video URL:", currentVideoUrl);
+        
+        const timeInSeconds = parseFloat(timestamp);
+        console.log("Parsed timestamp:", timeInSeconds);
+        
         if (newVideoUrl !== currentVideoUrl) {
+          console.log("Video URL changed, switching video");
           setCurrentVideoUrl(newVideoUrl);
           setIsVideoReady(false);
-        }
-
-        // Store the timestamp for later seeking
-        const timeInSeconds = parseFloat(timestamp);
-        if (!isNaN(timeInSeconds) && timeInSeconds > 0) {
-          setPendingSeek({ time: timeInSeconds, videoPath });
+          // Store the timestamp for later seeking after video loads
+          if (!isNaN(timeInSeconds) && timeInSeconds > 0) {
+            console.log("Setting pending seek to:", timeInSeconds);
+            setPendingSeek({ time: timeInSeconds, videoPath });
+          }
+        } else {
+          console.log("Same video URL, executing seek immediately");
+          // Same video, seek immediately
+          if (!isNaN(timeInSeconds) && timeInSeconds > 0) {
+            console.log("Setting jumpToTime immediately to:", timeInSeconds);
+            setJumpToTime(timeInSeconds);
+            setTimeout(() => {
+              console.log("Clearing jumpToTime");
+              setJumpToTime(undefined);
+            }, 100);
+          } else {
+            console.log("Invalid timestamp, not seeking");
+          }
         }
       });
+    } else {
+      console.log("ERROR: onVideoUpdate is null!");
     }
   }, [onVideoUpdate, currentVideoUrl]);
 
@@ -98,16 +120,23 @@ const PodDetail: React.FC<PodDetailProps> = ({ id, onBack }) => {
 
   const handleVideoReady = () => {
     console.log("Video is ready for playback");
+    console.log("Pending seek:", pendingSeek);
     setIsVideoReady(true);
 
     // Execute pending seek if there is one
     if (pendingSeek) {
       console.log("Executing pending seek to:", pendingSeek.time);
       setTimeout(() => {
+        console.log("Setting jumpToTime to:", pendingSeek.time);
         setJumpToTime(pendingSeek.time);
-        setTimeout(() => setJumpToTime(undefined), 100);
+        setTimeout(() => {
+          console.log("Clearing jumpToTime");
+          setJumpToTime(undefined);
+        }, 100);
         setPendingSeek(null);
       }, 200);
+    } else {
+      console.log("No pending seek to execute");
     }
   };
 
@@ -127,37 +156,35 @@ const PodDetail: React.FC<PodDetailProps> = ({ id, onBack }) => {
 
   return (
     <motion.div
-      className="min-h-screen bg-gray-50"
+      className="min-h-screen bg-background"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 py-4">
+      <div className="bg-background/95 backdrop-blur-lg border-b border-border/30 sticky top-0 z-10 shadow-sm">
+        <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <button
+            <motion.button
               onClick={onBack}
-              className="flex items-center text-gray-600 hover:text-gray-900 transition-colors duration-200"
+              className="flex items-center px-4 py-2 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-lg transition-all duration-200 group"
+              whileHover={{ x: -2 }}
+              whileTap={{ scale: 0.98 }}
             >
-              <ArrowLeft className="w-5 h-5 mr-2" />
-              Back to Pods
-            </button>
+              <ArrowLeft className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform duration-200" />
+              <span className="font-medium">Back to Pods</span>
+            </motion.button>
 
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-3">
               <motion.button
                 onClick={handleShare}
-                className="flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors duration-200"
-                whileHover={{ scale: 1.02 }}
+                className="flex items-center px-4 py-2 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg border border-primary/20 transition-all duration-200"
+                whileHover={{ scale: 1.02, y: -1 }}
                 whileTap={{ scale: 0.98 }}
               >
                 <Share2 className="w-4 h-4 mr-2" />
                 Share
               </motion.button>
-
-              {/* <span className="px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full">
-                {pod.category}
-              </span> */}
             </div>
           </div>
         </div>
@@ -165,11 +192,11 @@ const PodDetail: React.FC<PodDetailProps> = ({ id, onBack }) => {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 items-stretch">
           {/* Left Column - Video and Info */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="xl:col-span-2 flex flex-col">
             {/* Video Player */}
-            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+            <div className="bg-muted/50 rounded-2xl overflow-hidden border border-border">
               <VideoPlayer
                 videoUrl={currentVideoUrl}
                 jumpToTime={jumpToTime}
@@ -178,53 +205,45 @@ const PodDetail: React.FC<PodDetailProps> = ({ id, onBack }) => {
             </div>
 
             {/* Pod Info */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h1 className="text-xl lg:text-2xl font-bold text-gray-900 mb-3">
+            <div className="bg-card rounded-2xl p-6 border border-border flex-1 mt-6">
+              <h1 className="text-2xl xl:text-3xl font-bold text-foreground mb-4 leading-tight">
                 {podData.title}
               </h1>
 
-              {/* <p className="text-gray-600 mb-4">{pod.description}</p> */}
-
-              {/* URLs */}
-              <div className="mb-4 flex items-center gap-4">
-                {/* <h3 className="text-sm font-medium text-gray-700 mb-2">
-                  Source URLs:
-                </h3> */}
-                {/* <div className="space-y-2">
-                  {pod.urls.map((url, index) => (
-                    <a
+              {/* Tags */}
+              <div className="mb-6">
+                <div className="flex flex-wrap items-center gap-2">
+                  {podData.tags.map((tag, index) => (
+                    <span
                       key={index}
-                      href={url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center text-blue-600 hover:text-blue-700 transition-colors duration-200"
+                      className="bg-muted text-muted-foreground px-4 py-2 rounded-full text-sm font-medium border border-border"
                     >
-                      <ExternalLink className="w-4 h-4 mr-2" />
-                      <span className="text-sm truncate">{url}</span>
-                    </a>
+                      {tag}
+                    </span>
                   ))}
-                </div> */}
-                {podData.tags.map((tag, index) => (
-                  <span
-                    key={index}
-                    className="bg-blue-100 px-4 py-2 rounded-lg text-xs md:text-sm"
-                  >
-                    {tag}
-                  </span>
-                ))}
+                </div>
               </div>
 
-              {/* Meta Info */}
-              <div className="flex items-center text-sm text-gray-500">
-                {/* <span>Created: {pod.createdAt.toLocaleDateString()}</span> */}
-                {/* <span className="mx-2">•</span> */}
-                {/* <span>{pod.interactions} interactions</span> */}
+              {/* Status Badge */}
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center px-3 py-1.5 rounded-full border">
+                  <div className={`w-2 h-2 rounded-full mr-2 ${
+                    podData.status === 'ready' ? 'bg-green-500' : 
+                    podData.status === 'processing' ? 'bg-yellow-500' : 
+                    podData.status === 'error' ? 'bg-red-500' : 'bg-green-500'
+                  }`} />
+                  <span className="text-sm font-medium capitalize">
+                    {podData.status === 'ready' ? 'Ready' : 
+                     podData.status === 'processing' ? 'In Progress' : 
+                     podData.status === 'error' ? 'Error' : 'Ready'}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Right Column - Chat */}
-          <div className="lg:col-span-1">
+          <div className="xl:col-span-1 h-full">
             <div className="sticky top-24 h-[calc(100vh-8rem)]">
               <ChatInterface
                 messages={messages}

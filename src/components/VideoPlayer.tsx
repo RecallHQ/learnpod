@@ -14,8 +14,10 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, onTimeUpdate, jumpT
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(1);
+  const [isMuted, setIsMuted] = useState(false);
   const [isVideoReady, setIsVideoReady] = useState(false);
   const [videoError, setVideoError] = useState(false);
+  const [isSeeking, setIsSeeking] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const currentVideoUrlRef = useRef<string>('');
 
@@ -49,7 +51,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, onTimeUpdate, jumpT
   };
 
   const handleTimeUpdate = () => {
-    if (videoRef.current) {
+    if (videoRef.current && !isSeeking) {
       const time = videoRef.current.currentTime;
       setCurrentTime(time);
       onTimeUpdate?.(time);
@@ -81,17 +83,64 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, onTimeUpdate, jumpT
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
     const time = parseFloat(e.target.value);
+    console.log('Video path:', videoUrl);
+    console.log('Seeking to:', time, 'Video playing:', isPlaying);
+    
     if (videoRef.current) {
-      videoRef.current.currentTime = time;
+      // Pause video before seeking if playing
+      const wasPlaying = !videoRef.current.paused;
+      if (wasPlaying) {
+        videoRef.current.pause();
+      }
+      
+      // Set seeking flag to prevent timeUpdate interference
+      setIsSeeking(true);
+      
+      // Update the slider immediately for responsiveness
       setCurrentTime(time);
+      
+      // Simple direct seek
+      videoRef.current.currentTime = time;
+      console.log('Video currentTime set to:', videoRef.current.currentTime);
+      
+      // Wait for seek to complete, then resume if it was playing
+      setTimeout(() => {
+        if (videoRef.current) {
+          const actualTime = videoRef.current.currentTime;
+          console.log('Actual time after seek:', actualTime);
+          
+          // Clear seeking flag
+          setIsSeeking(false);
+          
+          // Resume if it was playing
+          if (wasPlaying) {
+            videoRef.current.play().catch(err => console.log('Play error:', err));
+          }
+        }
+      }, 100);
     }
   };
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
+    setIsMuted(newVolume === 0);
     if (videoRef.current) {
       videoRef.current.volume = newVolume;
+      videoRef.current.muted = newVolume === 0;
+    }
+  };
+
+  const toggleMute = () => {
+    if (videoRef.current) {
+      const newMuted = !isMuted;
+      setIsMuted(newMuted);
+      videoRef.current.muted = newMuted;
+      if (newMuted) {
+        setVolume(0);
+      } else {
+        setVolume(videoRef.current.volume || 1);
+      }
     }
   };
 
@@ -102,8 +151,15 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, onTimeUpdate, jumpT
   };
 
   const formatTime = (time: number) => {
-    const minutes = Math.floor(time / 60);
+    const hours = Math.floor(time / 3600);
+    const minutes = Math.floor((time % 3600) / 60);
     const seconds = Math.floor(time % 60);
+    
+    if (hours > 0) {
+      // YouTube format for videos over 1 hour: H:MM:SS
+      return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+    // YouTube format for videos under 1 hour: M:SS
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
@@ -117,7 +173,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, onTimeUpdate, jumpT
   }, [jumpToTime, isVideoReady]);
 
   return (
-    <div className="relative bg-black rounded-lg overflow-hidden group">
+    <div className="relative bg-black rounded-xl overflow-hidden group">
       {/* Video Element */}
       <video
         ref={videoRef}
@@ -138,19 +194,19 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, onTimeUpdate, jumpT
 
       {/* Loading indicator */}
       {!isVideoReady && !videoError && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+        <div className="absolute inset-0 flex items-center justify-center bg-black/60">
           <div className="text-white text-center">
-            <div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto mb-2"></div>
-            <p className="text-sm">Loading video...</p>
+            <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto mb-2"></div>
+            <p className="text-sm opacity-80">Loading video...</p>
           </div>
         </div>
       )}
 
       {/* Error indicator */}
       {videoError && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+        <div className="absolute inset-0 flex items-center justify-center bg-black/60">
           <div className="text-white text-center">
-            <p className="text-sm mb-2">Failed to load video</p>
+            <p className="text-sm mb-3 opacity-80">Failed to load video</p>
             <button 
               onClick={() => {
                 setVideoError(false);
@@ -158,7 +214,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, onTimeUpdate, jumpT
                   videoRef.current.load();
                 }
               }}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors duration-200"
             >
               Retry
             </button>
@@ -167,25 +223,47 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, onTimeUpdate, jumpT
       )}
 
       {/* Custom Controls */}
-      <motion.div
-        className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0 }}
-        whileHover={{ opacity: 1 }}
-      >
-        {/* Progress Bar */}
-        <div className="mb-4">
-          <input
-            type="range"
-            min="0"
-            max={duration}
-            value={currentTime}
-            onChange={handleSeek}
-            className="w-full h-1 bg-white/30 rounded-lg appearance-none cursor-pointer slider"
-          />
-          <div className="flex justify-between text-xs text-white/80 mt-1">
-            <span>{formatTime(currentTime)}</span>
-            <span>{formatTime(duration)}</span>
+      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-4 opacity-100 transition-opacity duration-300">
+        {/* Progress Bar - YouTube Style */}
+        <div className="mb-3">
+          <div 
+            className="relative w-full h-1.5 bg-white/30 rounded-lg cursor-pointer"
+            onClick={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              const x = e.clientX - rect.left;
+              const percentage = x / rect.width;
+              const time = percentage * duration;
+              if (videoRef.current) {
+                const wasPlaying = !videoRef.current.paused;
+                if (wasPlaying) {
+                  videoRef.current.pause();
+                }
+                setIsSeeking(true);
+                setCurrentTime(time);
+                videoRef.current.currentTime = time;
+                console.log('Clicked to seek to:', time);
+                
+                setTimeout(() => {
+                  setIsSeeking(false);
+                  if (wasPlaying) {
+                    videoRef.current?.play().catch(err => console.log('Play error:', err));
+                  }
+                }, 100);
+              }
+            }}
+          >
+            <input
+              type="range"
+              min="0"
+              max={duration}
+              value={currentTime}
+              onChange={handleSeek}
+              onInput={handleSeek}
+              className="w-full h-1.5 bg-transparent rounded-lg appearance-none cursor-pointer slider absolute inset-0"
+              style={{
+                background: `linear-gradient(to right, #3b82f6 ${(currentTime / duration) * 100}%, rgba(255,255,255,0.3) ${(currentTime / duration) * 100}%)`
+              }}
+            />
           </div>
         </div>
 
@@ -193,63 +271,68 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, onTimeUpdate, jumpT
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <button
-              onClick={() => skipTime(-10)}
-              className="text-white hover:text-blue-400 transition-colors duration-200"
-            >
-              <SkipBack className="w-5 h-5" />
-            </button>
-            
-            <button
               onClick={togglePlay}
-              className="text-white hover:text-blue-400 transition-colors duration-200"
+              className="text-white hover:text-white transition-colors duration-200"
             >
-              {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6" />}
+              {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
             </button>
-            
-            <button
-              onClick={() => skipTime(10)}
-              className="text-white hover:text-blue-400 transition-colors duration-200"
-            >
-              <SkipForward className="w-5 h-5" />
-            </button>
+            <div className="bg-black/[0.005] backdrop-blur-xl rounded-full px-3 py-1.5">
+              <span className="text-xs text-white/90 font-mono" style={{ minWidth: '120px' }}>
+                {formatTime(currentTime)} / {formatTime(duration)}
+              </span>
+            </div>
           </div>
 
           <div className="flex items-center space-x-4">
-            {/* Volume Control */}
+            {/* Volume Control - Always Visible */}
             <div className="flex items-center space-x-2">
-              <Volume2 className="w-4 h-4 text-white" />
+              <button
+                onClick={toggleMute}
+                className="text-white/80 hover:text-white transition-colors duration-200"
+              >
+                {isMuted || volume === 0 ? (
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+                  </svg>
+                ) : (
+                  <Volume2 className="w-4 h-4" />
+                )}
+              </button>
               <input
                 type="range"
                 min="0"
                 max="1"
-                step="0.1"
-                value={volume}
+                step="0.05"
+                value={isMuted ? 0 : volume}
                 onChange={handleVolumeChange}
-                className="w-20 h-1 bg-white/30 rounded-lg appearance-none cursor-pointer slider"
+                className="w-24 h-1.5 bg-white/30 rounded-lg appearance-none cursor-pointer slider"
+                style={{
+                  background: `linear-gradient(to right, white ${(isMuted ? 0 : volume) * 100}%, rgba(255,255,255,0.3) ${(isMuted ? 0 : volume) * 100}%)`
+                }}
               />
             </div>
 
-            <button className="text-white hover:text-blue-400 transition-colors duration-200">
-              <Maximize className="w-5 h-5" />
+            <button 
+              onClick={() => {
+                if (videoRef.current) {
+                  if (videoRef.current.requestFullscreen) {
+                    videoRef.current.requestFullscreen();
+                  } else if ((videoRef.current as any).webkitRequestFullscreen) {
+                    (videoRef.current as any).webkitRequestFullscreen();
+                  } else if ((videoRef.current as any).msRequestFullscreen) {
+                    (videoRef.current as any).msRequestFullscreen();
+                  }
+                }
+              }}
+              className="text-white/80 hover:text-white transition-colors duration-200"
+            >
+              <Maximize className="w-4 h-4" />
             </button>
           </div>
         </div>
-      </motion.div>
+      </div>
 
-      {/* Play Button Overlay */}
-      {!isPlaying && (
-        <motion.button
-          onClick={togglePlay}
-          className="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/30 transition-colors duration-300"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        >
-          <div className="bg-white/90 rounded-full p-6 shadow-lg">
-            <Play className="w-8 h-8 text-gray-800" />
-          </div>
-        </motion.button>
-      )}
     </div>
   );
 };

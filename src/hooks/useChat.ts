@@ -37,12 +37,16 @@ export const useChat = (id: string) => {
         await queryPodStreaming(id, question, (chunk) => {
           console.log('Received chunk:', chunk);
           console.log('start_time from chunk:', chunk.start_time);
+          console.log('videoUpdateCallback exists:', !!videoUpdateCallback);
           
           // Handle immediate video update from first chunk
           if (!hasReceivedFirstChunk && chunk.video_path && chunk.start_time !== undefined) {
             console.log('First chunk received, updating video immediately:', chunk.video_path, chunk.start_time);
             if (videoUpdateCallback) {
+              console.log('Calling videoUpdateCallback with:', chunk.video_path, chunk.start_time.toString());
               videoUpdateCallback(chunk.video_path, chunk.start_time.toString());
+            } else {
+              console.log('ERROR: videoUpdateCallback is null!');
             }
             hasReceivedFirstChunk = true;
           }

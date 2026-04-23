@@ -10,7 +10,7 @@ import PodGrid from "./components/PodGrid";
 import PodDetail from "./components/PodDetail";
 import PerformanceDebugger from "./components/PerformanceDebugger";
 import ShareModal from "./components/ShareModal";
-import { getPodById } from "./hooks/usePod";
+import { getPodById, getPods, getUsage } from "./hooks/usePod";
 import { getUserSessionId } from "./utils/cookieUtils";
 import SearchBar from "./components/SearchBar";
 import FeatureDeck from "./components/FeatureDeck";
@@ -105,136 +105,46 @@ const HomePage: React.FC<HomePageProps> = ({
   const navigate = useNavigate();
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const featuredRef = useRef<HTMLDivElement | null>(null);
-  const [pods, setPods] = useState<Pod[]>([
-    {
-      id: "pod-1",
-      title: "Mastering React Hooks in 25 Minutes",
-      tags: ["React", "Hooks", "Frontend"],
-      image:
-        "/home/azureuser/recallstore/recall-api/../recallhq/learnpod_static/placeholder.jpg",
-      queries: 124,
-      views: 310,
-      status: "ready",
-    },
-    {
-      id: "pod-2",
-      title: "Python for Data Analysis: Pandas Power Tips",
-      tags: ["Python", "Data", "Pandas"],
-      image:
-        "/home/azureuser/recallstore/recall-api/../recallhq/learnpod_static/placeholder.jpg",
-      queries: 98,
-      views: 245,
-      status: "ready",
-    },
-    {
-      id: "pod-3",
-      title: "Design Systems: From Tokens to Components",
-      tags: ["Design", "UX", "Systems"],
-      image:
-        "/home/azureuser/recallstore/recall-api/../recallhq/learnpod_static/placeholder.jpg",
-      queries: 57,
-      views: 180,
-      status: "ready",
-    },
-    {
-      id: "pod-4",
-      title: "Intro to Machine Learning Concepts for Builders",
-      tags: ["ML", "Foundations", "AI"],
-      image:
-        "/home/azureuser/recallstore/recall-api/../recallhq/learnpod_static/placeholder.jpg",
-      queries: 76,
-      views: 222,
-      status: "ready",
-    },
-    {
-      id: "pod-5",
-      title: "Next.js App Router Deep Dive",
-      tags: ["Next.js", "Routing", "SSR"],
-      image:
-        "/home/azureuser/recallstore/recall-api/../recallhq/learnpod_static/placeholder.jpg",
-      queries: 132,
-      views: 355,
-      status: "ready",
-    },
-    {
-      id: "pod-6",
-      title: "Building Accessible Interfaces That Scale",
-      tags: ["Accessibility", "UI", "WCAG"],
-      image:
-        "/home/azureuser/recallstore/recall-api/../recallhq/learnpod_static/placeholder.jpg",
-      queries: 41,
-      views: 120,
-      status: "ready",
-    },
-    {
-      id: "pod-7",
-      title: "TypeScript Patterns for Real-World Apps",
-      tags: ["TypeScript", "Patterns", "Code"],
-      image:
-        "/home/azureuser/recallstore/recall-api/../recallhq/learnpod_static/placeholder.jpg",
-      queries: 66,
-      views: 198,
-      status: "ready",
-    },
-    {
-      id: "pod-8",
-      title: "Product Strategy: Turning Insights into Roadmaps",
-      tags: ["Product", "Strategy", "Growth"],
-      image:
-        "/home/azureuser/recallstore/recall-api/../recallhq/learnpod_static/placeholder.jpg",
-      queries: 52,
-      views: 142,
-      status: "ready",
-    },
-    {
-      id: "pod-9",
-      title: "Figma to Code: Prototyping That Ships",
-      tags: ["Figma", "Prototyping", "Design"],
-      image:
-        "/home/azureuser/recallstore/recall-api/../recallhq/learnpod_static/placeholder.jpg",
-      queries: 89,
-      views: 271,
-      status: "ready",
-    },
-  ]);
+  const [pods, setPods] = useState<Pod[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [shareModalPod, setShareModalPod] = useState<Pod | null>(null);
   const [isSearchVisible, setIsSearchVisible] = useState(false);
 
   const prefersReducedMotion = useReducedMotion();
 
-  // NOTE: API fetching is paused while we use mock data.
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const [podsData, usageResponse] = await Promise.all([
-  //         getPods(),
-  //         getUsage(),
-  //       ]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const [podsData, usageResponse] = await Promise.all([
+          getPods(),
+          getUsage(),
+        ]);
 
-  //       setUsageData(usageResponse);
+        // Merge query counts with pods
+        const mergedPods = podsData.map((pod) => {
+          const usageKey = `pod_${pod.id}`;
+          const queryCount = usageResponse[usageKey]?.queries || 0;
+          const viewsCount = usageResponse[usageKey]?.views || 0;
 
-  //       // Merge query counts with pods
-  //       const mergedPods = podsData.map((pod) => {
-  //         const usageKey = `pod_${pod.id}`;
-  //         const queryCount = usageResponse[usageKey]?.queries || 0;
-  //         const viewsCount = usageResponse[usageKey]?.views || 0;
+          return {
+            ...pod,
+            queries: queryCount,
+            views: viewsCount,
+          };
+        });
 
-  //         return {
-  //           ...pod,
-  //           queries: queryCount,
-  //           views: viewsCount,
-  //         };
-  //       });
+        setPods(mergedPods);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  //       setPods(mergedPods);
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, []);
+    fetchData();
+  }, []);
 
   // Filter and sort pods
   const filteredPods = useMemo(() => {
@@ -335,12 +245,18 @@ const HomePage: React.FC<HomePageProps> = ({
         )}
 
         <div className="mt-8">
-          <PodGrid
-            pods={filteredPods}
-            onPodClick={handlePodClick}
-            onToggleFollow={handleToggleFollow}
-            onShare={handlePodShare}
-          />
+          {loading ? (
+            <div className="flex justify-center items-center py-12">
+              <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          ) : (
+            <PodGrid
+              pods={filteredPods}
+              onPodClick={handlePodClick}
+              onToggleFollow={handleToggleFollow}
+              onShare={handlePodShare}
+            />
+          )}
         </div>
       </section>
 
